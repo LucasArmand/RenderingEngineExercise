@@ -7,12 +7,20 @@ public class Ray {
 		//System.out.println(t);
 		if (t >= 255 ) {
 			//return null;
-			return 255;
+			//return 255;
 		}
-		if(t<0) {
-			return 0;
-		}
-		return t;
+		Vector hitP = direction.multiply(t).add(origin);
+		//if(hitP.getX() == 0 && hitP.getY() == 0) {
+			
+			if(tri.insideTri(hitP)) {
+				//System.out.println(hitP +" is in the triangle");
+				return  1/ (new Vector(0,0,0).getDistance(hitP)) * 255;
+				
+			}
+		//}
+		
+		
+		return 0;
 		//return direction.multiply(t).add(origin);
 	}
 	

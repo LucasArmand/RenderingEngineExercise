@@ -49,6 +49,9 @@ public class Vector {
 		return new Vector(getY() * other.getZ() - getZ() * other.getY(), getZ() * other.getX() - getX() * other.getZ(), getX() * other.getY() - getY() * other.getX());
 	}
 	
+	public double getDistance(Vector other) {
+		return sub(other).getMagnitude();
+	}
 	public static Vector center(Vector a, Vector b, Vector c) {
 		double X = (a.getX() + b.getX() + c.getX())/3;
 		double Y = (a.getY() + b.getY() + c.getY())/3;
