@@ -9,6 +9,7 @@ public class MainEngine {
 	
 	static boolean rightHeld,leftHeld,upHeld,downHeld,forwardHeld,backHeld;
 	static Vector cameraPosition;
+	static double angle = 0;
 	public static void main(String[] args) {
 		JFrame frame = new JFrame("Engine");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -16,7 +17,7 @@ public class MainEngine {
 		frame.setVisible(true);
 		RenderWindow r = new RenderWindow(600,600);
 		frame.setLayout(null);
-		Tri t = new Tri(new Vector(0,0,1),new Vector(20,-5,1),new Vector(0,-50,10));
+		Tri t = new Tri(new Vector(-10,0,0),new Vector(10,0,0),new Vector(0,10,0));
 		System.out.println("tri normal: " + t.getNormal());
 		Ray ray = new Ray(new Vector(0,0,-10),new Vector(0,0,0));
 		System.out.println(ray.getHit(t));
@@ -28,7 +29,7 @@ public class MainEngine {
 		
 		//System.out.println(new Vector(1,0,0).cross(new Vector(0,1,1)));
 		//System.out.println(t.getDistance());
-		double fov = 150;
+		double fov = 300;
 		Ray[][] cameraRays = new Ray[500][500];
 		cameraPosition = new Vector(0,0,-20);
 		
@@ -36,24 +37,32 @@ public class MainEngine {
 		
 		
 		frame.addKeyListener(new KeyListener() {
-
+			
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
 				
 				
 			}
-
+			
 			@Override
 			public void keyPressed(KeyEvent e) {
 				
+				if(e.getKeyCode() == KeyEvent.VK_E) {
+					angle += .1;
+				}
+				if(e.getKeyCode() == KeyEvent.VK_Q) {
+					angle -= .1;
+				}
 				if(e.getKeyCode() == KeyEvent.VK_SPACE) {
 					upHeld = true;
 					//System.out.println("w down");
 					
+					
 				}
 				if(e.getKeyCode() == KeyEvent.VK_CONTROL) {
 					downHeld = true;
+					
 					//System.out.println("w down");
 					
 				}
@@ -113,6 +122,7 @@ public class MainEngine {
 		
 		TimerTask update = new TimerTask() {
 			public void run() {
+				t.rotateY(angle);
 				if(forwardHeld) {
 					cameraPosition = cameraPosition.add(new Vector(0,0,.5));
 				}
@@ -131,20 +141,22 @@ public class MainEngine {
 				if(downHeld) {
 					cameraPosition = cameraPosition.add(new Vector(0,.5,0));
 				}
-				Tri other = new Tri(new Vector(-5,5,1),new Vector (-5,-5,1), new Vector(0,0,1));
+				//Tri other = new Tri(new Vector(-5,0,1),new Vector (-5,0,1), new Vector(0,0,1));
 				for(double i = 0; i < 500; i++){
 					for(double j = 0; j < 500; j++) {
 						cameraRays[(int)i][(int)j] = new Ray(cameraPosition,new Vector((i-250)/fov,(j-250)/fov,1));
-						int hitVal = (int)(cameraRays[(int)i][(int)j].getHit(t));
-						hitVal += (int)(cameraRays[(int)i][(int)j].getHit(other));
-						r.setPixel((int)i,(int)j, new int[] {hitVal,hitVal,hitVal});
+						int[] hitVals = (cameraRays[(int)i][(int)j].getHit(t));
+						//int[] oHitVals = (cameraRays[(int)i][(int)j].getHit(other));
+						r.setPixel((int)i,(int)j, new int[] {hitVals[0],hitVals[1],hitVals[2]});
 					}
 					//System.out.println(new Vector((i-50)/10,(0)/10,1) +", " +cameraRays[(int)i][(int)500].getHit(t));
 				}
 				r.updateRender();
 			}
 		};
+		
 		timer.schedule(update, 5,10);
+		
 	}
 }
 ;

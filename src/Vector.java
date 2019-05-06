@@ -5,6 +5,9 @@ public class Vector {
 	Vector(double x, double y, double z) {
 		point = new double[] {x,y,z};
 	}
+	Vector(double[] a){
+		point = a;
+	}
 	
 	public void setX(double x) {
 		point[0] = x;
@@ -55,10 +58,10 @@ public class Vector {
 	public static Vector center(Vector a, Vector b, Vector c) {
 		double X = (a.getX() + b.getX() + c.getX())/3;
 		double Y = (a.getY() + b.getY() + c.getY())/3;
-		double z = (a.getZ() + b.getZ() + c.getZ())/3;
-		return(new Vector(X,Y,z));
+		double Z = (a.getZ() + b.getZ() + c.getZ())/3;
+		return(new Vector(X,Y,Z));
 	}
-	
+
 	public String toString() {
 		return "<"+getX()+","+getY()+","+getZ()+">";
 	}
