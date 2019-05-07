@@ -9,7 +9,9 @@ public class MainEngine {
 	
 	static boolean rightHeld,leftHeld,upHeld,downHeld,forwardHeld,backHeld;
 	static Vector cameraPosition;
-	static double angle = 0;
+	static double xAngle = 0;
+	static double yAngle = 0;
+	static double zAngle = 0;
 	public static void main(String[] args) {
 		JFrame frame = new JFrame("Engine");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -17,7 +19,7 @@ public class MainEngine {
 		frame.setVisible(true);
 		RenderWindow r = new RenderWindow(600,600);
 		frame.setLayout(null);
-		Tri t = new Tri(new Vector(-10,0,0),new Vector(10,0,0),new Vector(0,10,0));
+		Tri t = new Tri(new Vector(10,0,0),new Vector(0,-10,0),new Vector(0,10,0));
 		System.out.println("tri normal: " + t.getNormal());
 		Ray ray = new Ray(new Vector(0,0,-10),new Vector(0,0,0));
 		System.out.println(ray.getHit(t));
@@ -49,10 +51,25 @@ public class MainEngine {
 			public void keyPressed(KeyEvent e) {
 				
 				if(e.getKeyCode() == KeyEvent.VK_E) {
-					angle += .1;
+					xAngle += .1;
+					System.out.println(xAngle);
 				}
 				if(e.getKeyCode() == KeyEvent.VK_Q) {
-					angle -= .1;
+					xAngle -= .1;
+				}
+				if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+					yAngle += .1;
+					System.out.println(yAngle);
+				}
+				if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+					yAngle -= .1;
+				}
+				if(e.getKeyCode() == KeyEvent.VK_UP) {
+					zAngle += .1;
+					System.out.println(zAngle);
+				}
+				if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+					zAngle -= .1;
 				}
 				if(e.getKeyCode() == KeyEvent.VK_SPACE) {
 					upHeld = true;
@@ -122,7 +139,7 @@ public class MainEngine {
 		
 		TimerTask update = new TimerTask() {
 			public void run() {
-				t.rotateY(angle);
+				t.rotate(xAngle,yAngle,zAngle);
 				if(forwardHeld) {
 					cameraPosition = cameraPosition.add(new Vector(0,0,.5));
 				}

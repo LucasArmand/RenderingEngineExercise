@@ -42,22 +42,42 @@ public class Tri {
 	public double getDistance() {
 		return distance;
 	}
+	public void update() {
+		center = Vector.center(points[0], points[1], points[2]);
+		distance = center.getMagnitude();
+		normal = points[0].sub(points[1]).cross(points[1].sub(points[2]));
+		normal.normalize();
+	}
+	public void rotate (double ax,double ay, double az) {
+		for(int i = 0; i < 3; i++) {
+			double x,y,z;
+			y = Math.cos(ax) * oPoints[i].getY() + Math.sin(ax) * oPoints[i].getZ();
+			z = -Math.sin(ax) * oPoints[i].getY() + Math.cos(ax) * oPoints[i].getZ();
+			points[i] = new Vector(oPoints[i].getX(),y,z);
+			x = Math.cos(ay) * points[i].getX() + Math.sin(ay) * points[i].getZ();
+			z = -Math.sin(ay) * points[i].getX() + Math.cos(ay) * points[i].getZ();
+			points[i] = new Vector(x,points[i].getY(),z);
+			x = Math.cos(az) * points[i].getX() + Math.sin(az) * points[i].getY();
+			y = -Math.sin(az) * points[i].getX() + Math.cos(az) * points[i].getY();
+			points[i] = new Vector(x,y,points[i].getZ());
+		}
+		update();
+	}
+	/*
 	public void rotateY (double t) {
 		for(int i = 0; i < 3; i++) {
-			//points[i] = center.sub(oPoints[i]);
-			//System.out.println(t / Math.PI);
-			//System.out.println(Math.sin(t) +", " + Math.cos(t));
-			double x = Math.cos(t) * oPoints[i].getX() + Math.sin(t) * oPoints[i].getZ();
-			double z = -Math.sin(t) * oPoints[i].getX() + Math.cos(t) * oPoints[i].getZ();
-			//System.out.println("x:" + x +", z:"+ z);
-			//System.out.println(points[i].getDistance(center));
 			
-			points[i] = new Vector(x,oPoints[i].getY(),z);
-			//System.out.println(i +": " + points[i]);
-			//System.out.println("real " + i + ": " + this.getPoints()[i]);
+			
 		}
-		
+		update();
 	}
+	public void rotateZ (double t) {
+		for(int i = 0; i < 3; i++) {
+			double 
+		}
+		update();
+	}
+	*/
 	public Tri(Vector a, Vector b, Vector c) {
 		points = new Vector[] {a,b,c};
 		oPoints = new Vector[] {a,b,c};

@@ -15,8 +15,8 @@ public class Ray {
 			
 			if(tri.insideTri(hitP)) {
 				//System.out.println(hitP +" is in the triangle");
-				return (new int[] {(int)(255/t),(int)(255/t),(int)(255/t)});
-				//return  new int[] {(int)(1/ (tri.getPoints()[0].getDistan;e(hitP)) * 255),(int)(1/ (tri.getPoints()[1].getDistance(hitP)) * 255),(int) (1/ (tri.getPoints()[2].getDistance(hitP)) * 255)};
+				//return (new int[] {(int)(255/t),(int)(255/t),(int)(255/t)});
+				return  new int[] {(int)(1/ (tri.getPoints()[0].getDistance(hitP)) * 255),(int)(1/ (tri.getPoints()[1].getDistance(hitP)) * 255),(int) (1/ (tri.getPoints()[2].getDistance(hitP)) * 255)};
 				
 			}
 		//}
