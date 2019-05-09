@@ -1,8 +1,12 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 public class MainEngine {
@@ -12,18 +16,26 @@ public class MainEngine {
 	static double xAngle = 0;
 	static double yAngle = 0;
 	static double zAngle = 0;
-	public static void main(String[] args) {
+	static BufferedImage texture;
+	public static void main(String[] args) throws IOException {
 		JFrame frame = new JFrame("Engine");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBounds(200,100,600,600);
 		frame.setVisible(true);
 		RenderWindow r = new RenderWindow(600,600);
 		frame.setLayout(null);
-		Tri t = new Tri(new Vector(10,0,0),new Vector(0,-10,0),new Vector(0,10,0));
+		Tri t = new Tri(new Vector(0,0,0),new Vector(10,0,0),new Vector(0,10,10));
 		System.out.println("tri normal: " + t.getNormal());
 		Ray ray = new Ray(new Vector(0,0,-10),new Vector(0,0,0));
 		System.out.println(ray.getHit(t));
 		
+		
+		texture = new BufferedImage(600, 600, BufferedImage.TYPE_3BYTE_BGR);
+		texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex1.jpg"));
+		System.out.println(texture.getHeight());
+		for(int i = 0; i < 600;i++) {
+		//	System.out.println(texture.getRaster().getPixel(300, i, new int[3])[0]);
+		}
 		//System.out.println(t.getNormal());
 		r.setBounds(50,50,500,500);
 		//System.out.println(new Vector(1,2,1).cross(new Vector(1,2,2)));
@@ -36,7 +48,14 @@ public class MainEngine {
 		cameraPosition = new Vector(0,0,-20);
 		
 		Timer timer = new Timer();
-		
+		Tri test = new Tri(new Vector(0,0,0),new Vector(1,1,0),new Vector(1,2,0));
+		double[] point = test.getCoords(new Vector(.5,1.5,0));
+		System.out.println(point[0] +", " + point[1]);
+		/*
+		Vector v1 = new Vector (1,1,0);
+		Vector v2 = new Vector(0,0,1);
+		System.out.println(Vector.project(v2, v1));
+		*/
 		
 		frame.addKeyListener(new KeyListener() {
 			
@@ -52,21 +71,21 @@ public class MainEngine {
 				
 				if(e.getKeyCode() == KeyEvent.VK_E) {
 					xAngle += .1;
-					System.out.println(xAngle);
+					//System.out.println(xAngle);
 				}
 				if(e.getKeyCode() == KeyEvent.VK_Q) {
 					xAngle -= .1;
 				}
 				if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
 					yAngle += .1;
-					System.out.println(yAngle);
+					//System.out.println(yAngle);
 				}
 				if(e.getKeyCode() == KeyEvent.VK_LEFT) {
 					yAngle -= .1;
 				}
 				if(e.getKeyCode() == KeyEvent.VK_UP) {
 					zAngle += .1;
-					System.out.println(zAngle);
+					//System.out.println(zAngle);
 				}
 				if(e.getKeyCode() == KeyEvent.VK_DOWN) {
 					zAngle -= .1;
@@ -162,9 +181,17 @@ public class MainEngine {
 				for(double i = 0; i < 500; i++){
 					for(double j = 0; j < 500; j++) {
 						cameraRays[(int)i][(int)j] = new Ray(cameraPosition,new Vector((i-250)/fov,(j-250)/fov,1));
-						int[] hitVals = (cameraRays[(int)i][(int)j].getHit(t));
+						double[] hitVals = (cameraRays[(int)i][(int)j].getHit(t));
+						if(hitVals.length == 2) {
+							//System.out.println(hitVals[0] +", " + hitVals[1]);
+							
+							int[] pixel = texture.getRaster().getPixel((int)(hitVals[0]*40),(int)(hitVals[1]*40),new int[] {0,0,0});
+							//System.out.println(pixel[0]);
+							//pixel = new int[] {5,10,100};
+							r.setPixel((int)i,(int)j, pixel);
+						}
 						//int[] oHitVals = (cameraRays[(int)i][(int)j].getHit(other));
-						r.setPixel((int)i,(int)j, new int[] {hitVals[0],hitVals[1],hitVals[2]});
+						
 					}
 					//System.out.println(new Vector((i-50)/10,(0)/10,1) +", " +cameraRays[(int)i][(int)500].getHit(t));
 				}

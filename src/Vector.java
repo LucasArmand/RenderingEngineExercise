@@ -9,6 +9,10 @@ public class Vector {
 		point = a;
 	}
 	
+	public static Vector project (Vector  a, Vector b) {
+		return a.multiply(a.dot(b)/(Math.pow(a.getMagnitude(),2)));
+	}
+	
 	public void setX(double x) {
 		point[0] = x;
 	}

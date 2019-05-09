@@ -32,6 +32,17 @@ public class Tri {
 		}
 		return !noHit;
 	}
+	public double[] getCoords (Vector p) {
+		Vector xBase = points[1].sub(points[0]);
+		xBase.normalize();
+		//System.out.println(xBase);
+		
+		Vector yBase = normal.cross(xBase);
+		yBase.normalize();
+		//System.out.println(yBase);
+		//System.out.println(Vector.project(xBase,p.sub(points[0])));
+		return new double[] {Vector.project(xBase, p.sub(points[0])).getMagnitude(),points[0].sub(Vector.project(yBase, p.sub(points[0]))).getMagnitude()};
+	}
 	
 	public Vector getNormal() {
 		return normal;
