@@ -12,7 +12,9 @@ public class Vector {
 	public static Vector project (Vector  a, Vector b) {
 		return a.multiply(a.dot(b)/(Math.pow(a.getMagnitude(),2)));
 	}
-	
+	public Vector copy() {
+		return new Vector(this.getX(),this.getY(),this.getZ());
+	}
 	public void setX(double x) {
 		point[0] = x;
 	}

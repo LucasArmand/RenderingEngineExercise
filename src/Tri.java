@@ -5,6 +5,7 @@ public class Tri {
 	private Vector normal;
 	private double distance;
 	private Vector center;
+	private Vector offset;
 	public Vector[] getPoints() {
 		return points;
 	}
@@ -35,13 +36,26 @@ public class Tri {
 	public double[] getCoords (Vector p) {
 		Vector xBase = points[1].sub(points[0]);
 		xBase.normalize();
-		//System.out.println(xBase);
+		//System.out.println("x:" + xBase);
 		
 		Vector yBase = normal.cross(xBase);
 		yBase.normalize();
-		//System.out.println(yBase);
+		//System.out.println("y: " + yBase);
 		//System.out.println(Vector.project(xBase,p.sub(points[0])));
-		return new double[] {Vector.project(xBase, p.sub(points[0])).getMagnitude(),points[0].sub(Vector.project(yBase, p.sub(points[0]))).getMagnitude()};
+		return new double[] {Vector.project(xBase, points[0].sub(p)).getMagnitude(),Vector.project(yBase, p.sub(points[0])).getMagnitude()};
+	}
+	
+	public Vector getXBase() {
+		Vector xBase = points[1].sub(points[0]);
+		xBase.normalize();
+		return xBase;
+	}
+	public Vector getYBase() {
+		Vector xBase = points[1].sub(points[0]);
+		xBase.normalize();
+		Vector yBase = normal.cross(xBase);
+		yBase.normalize();
+		return yBase;
 	}
 	
 	public Vector getNormal() {
@@ -71,7 +85,12 @@ public class Tri {
 			x = Math.cos(az) * points[i].getX() + Math.sin(az) * points[i].getY();
 			y = -Math.sin(az) * points[i].getX() + Math.cos(az) * points[i].getY();
 			points[i] = new Vector(x,y,points[i].getZ());
+			points[i] = points[i].add(offset);
 		}
+		update();
+	}
+	public void translate(Vector v) {
+		offset = v;
 		update();
 	}
 	/*
@@ -92,6 +111,7 @@ public class Tri {
 	public Tri(Vector a, Vector b, Vector c) {
 		points = new Vector[] {a,b,c};
 		oPoints = new Vector[] {a,b,c};
+		offset = new Vector(0,0,0);
 		center = Vector.center(a, b, c);
 		distance = center.getMagnitude();
 		normal = a.sub(b).cross(b.sub(c));

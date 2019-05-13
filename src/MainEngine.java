@@ -7,7 +7,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 public class MainEngine {
 	
@@ -16,37 +18,47 @@ public class MainEngine {
 	static double xAngle = 0;
 	static double yAngle = 0;
 	static double zAngle = 0;
+	static Mesh m;
 	static BufferedImage texture;
 	public static void main(String[] args) throws IOException {
 		JFrame frame = new JFrame("Engine");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBounds(200,100,600,600);
+		frame.setBounds(200,100,500,500);
 		frame.setVisible(true);
-		RenderWindow r = new RenderWindow(600,600);
+		RenderWindow r = new RenderWindow(250,250);
 		frame.setLayout(null);
-		Tri t = new Tri(new Vector(0,0,0),new Vector(10,0,0),new Vector(0,10,10));
+		Tri t = new Tri(new Vector(-10,0,0),new Vector(0,10,0),new Vector(10,0,0));
 		System.out.println("tri normal: " + t.getNormal());
 		Ray ray = new Ray(new Vector(0,0,-10),new Vector(0,0,0));
 		System.out.println(ray.getHit(t));
-		
-		
-		texture = new BufferedImage(600, 600, BufferedImage.TYPE_3BYTE_BGR);
+
 		texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex1.jpg"));
 		System.out.println(texture.getHeight());
-		for(int i = 0; i < 600;i++) {
-		//	System.out.println(texture.getRaster().getPixel(300, i, new int[3])[0]);
-		}
-		//System.out.println(t.getNormal());
-		r.setBounds(50,50,500,500);
+
+		r.setBounds(0,0,250,250);
 		//System.out.println(new Vector(1,2,1).cross(new Vector(1,2,2)));
 		frame.add(r);
-		
-		//System.out.println(new Vector(1,0,0).cross(new Vector(0,1,1)));
-		//System.out.println(t.getDistance());
+		JLabel framerateText = new JLabel("FPS: ");
+		framerateText.setBounds(250,250,200,100);
+		frame.add(framerateText);
 		double fov = 300;
-		Ray[][] cameraRays = new Ray[500][500];
+		Ray[][] cameraRays = new Ray[250][250];
 		cameraPosition = new Vector(0,0,-20);
-		
+		Vector a = new Vector(-5,0,-5);
+		Vector b = new Vector(5,0,-5);
+		Vector c = new Vector(0,0,5);
+		Vector d = new Vector(0,-7.07,0);
+		Tri t1 = new Tri(a,b,d);
+		Tri t2 = new Tri(b, c,d);
+		Tri t3 = new Tri(c, a,d);
+		Tri t4 = new Tri(a,b,c);
+		System.out.println(t2.getXBase() +", : " + t2.getYBase());
+		try {
+			m = new Mesh(new Vector(0,0,0),t1,t2,t3,t4);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Timer timer = new Timer();
 		Tri test = new Tri(new Vector(0,0,0),new Vector(1,1,0),new Vector(1,2,0));
 		double[] point = test.getCoords(new Vector(.5,1.5,0));
@@ -158,7 +170,7 @@ public class MainEngine {
 		
 		TimerTask update = new TimerTask() {
 			public void run() {
-				t.rotate(xAngle,yAngle,zAngle);
+				m.rotate(xAngle,yAngle,zAngle);
 				if(forwardHeld) {
 					cameraPosition = cameraPosition.add(new Vector(0,0,.5));
 				}
@@ -177,19 +189,29 @@ public class MainEngine {
 				if(downHeld) {
 					cameraPosition = cameraPosition.add(new Vector(0,.5,0));
 				}
+				
+				
 				//Tri other = new Tri(new Vector(-5,0,1),new Vector (-5,0,1), new Vector(0,0,1));
-				for(double i = 0; i < 500; i++){
-					for(double j = 0; j < 500; j++) {
+				for(double i = 0; i < 250; i++){
+					for(double j = 0; j < 250; j++) {
 						cameraRays[(int)i][(int)j] = new Ray(cameraPosition,new Vector((i-250)/fov,(j-250)/fov,1));
-						double[] hitVals = (cameraRays[(int)i][(int)j].getHit(t));
+						int[] pixel = m.renderRay(cameraRays[(int)i][(int)j]);
+						/*
+						  double[] hitVals = (cameraRays[(int)i][(int)j].getHit(t));
+						 
+						int[] pixel;
 						if(hitVals.length == 2) {
 							//System.out.println(hitVals[0] +", " + hitVals[1]);
 							
-							int[] pixel = texture.getRaster().getPixel((int)(hitVals[0]*40),(int)(hitVals[1]*40),new int[] {0,0,0});
+							pixel = texture.getRaster().getPixel((int)(hitVals[0]*50)%texture.getWidth(),(int)(hitVals[1]*50)%texture.getHeight(),new int[] {0,0,0});
 							//System.out.println(pixel[0]);
 							//pixel = new int[] {5,10,100};
-							r.setPixel((int)i,(int)j, pixel);
+							
+						}else {
+							pixel = new int[]{0,0,0};
 						}
+						*/
+						r.setPixel((int)i,(int)j, pixel);
 						//int[] oHitVals = (cameraRays[(int)i][(int)j].getHit(other));
 						
 					}
