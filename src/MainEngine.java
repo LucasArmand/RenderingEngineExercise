@@ -19,13 +19,16 @@ public class MainEngine {
 	static double yAngle = 0;
 	static double zAngle = 0;
 	static Mesh m;
+	static int xSize = 500;
+	static int ySize = 500;
 	static BufferedImage texture;
 	public static void main(String[] args) throws IOException {
+		
 		JFrame frame = new JFrame("Engine");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBounds(200,100,500,500);
+		frame.setBounds(200,100,xSize,ySize);
 		frame.setVisible(true);
-		RenderWindow r = new RenderWindow(250,250);
+		RenderWindow r = new RenderWindow(xSize,ySize);
 		frame.setLayout(null);
 		Tri t = new Tri(new Vector(-10,0,0),new Vector(0,10,0),new Vector(10,0,0));
 		System.out.println("tri normal: " + t.getNormal());
@@ -35,18 +38,19 @@ public class MainEngine {
 		texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex1.jpg"));
 		System.out.println(texture.getHeight());
 
-		r.setBounds(0,0,250,250);
+		r.setBounds(0,0,xSize,ySize);
 		//System.out.println(new Vector(1,2,1).cross(new Vector(1,2,2)));
 		frame.add(r);
 		JLabel framerateText = new JLabel("FPS: ");
+		
 		framerateText.setBounds(250,250,200,100);
 		frame.add(framerateText);
 		double fov = 300;
-		Ray[][] cameraRays = new Ray[250][250];
+		Ray[][] cameraRays = new Ray[xSize][ySize];
 		cameraPosition = new Vector(0,0,-20);
 		Vector a = new Vector(-5,0,-5);
 		Vector b = new Vector(5,0,-5);
-		Vector c = new Vector(0,0,5);
+		Vector c = new Vector(0,0,7.07);
 		Vector d = new Vector(0,-7.07,0);
 		Tri t1 = new Tri(a,b,d);
 		Tri t2 = new Tri(b, c,d);
@@ -189,29 +193,37 @@ public class MainEngine {
 				if(downHeld) {
 					cameraPosition = cameraPosition.add(new Vector(0,.5,0));
 				}
-				
+				int splitX = 5;
+				int splitY = 10;
+				int[][][] pixels = new int[xSize][ySize][3];
+				Render[][] renders = new Render[splitX][splitY];
+				Thread[][] threads = new Thread[splitX][splitY];
+				for(int i = 0; i < splitX; i++) {
+					for(int j = 0; j < splitY; j++) {
+						renders[i][j] = new Render(i * (xSize/splitX),j  * (ySize / splitY),(xSize/splitX),(ySize/splitY),xSize,ySize,cameraPosition,m,pixels,texture);
+						threads[i][j] = new Thread(renders[i][j]);
+						threads[i][j].start();
+					}
+				}
+				boolean done = false;
+				while (!done) {
+					done = true;
+					for(int i = 0; i < splitX; i++) {
+						for(int j = 0; j < splitY; j++) {
+							if(threads[i][j].isAlive()) {
+								done = false;
+							}
+						}
+					}
+				}
 				
 				//Tri other = new Tri(new Vector(-5,0,1),new Vector (-5,0,1), new Vector(0,0,1));
-				for(double i = 0; i < 250; i++){
-					for(double j = 0; j < 250; j++) {
-						cameraRays[(int)i][(int)j] = new Ray(cameraPosition,new Vector((i-250)/fov,(j-250)/fov,1));
-						int[] pixel = m.renderRay(cameraRays[(int)i][(int)j]);
-						/*
-						  double[] hitVals = (cameraRays[(int)i][(int)j].getHit(t));
-						 
-						int[] pixel;
-						if(hitVals.length == 2) {
-							//System.out.println(hitVals[0] +", " + hitVals[1]);
-							
-							pixel = texture.getRaster().getPixel((int)(hitVals[0]*50)%texture.getWidth(),(int)(hitVals[1]*50)%texture.getHeight(),new int[] {0,0,0});
-							//System.out.println(pixel[0]);
-							//pixel = new int[] {5,10,100};
-							
-						}else {
-							pixel = new int[]{0,0,0};
-						}
-						*/
-						r.setPixel((int)i,(int)j, pixel);
+				for(int i = 0; i < xSize; i++){
+					for(int j = 0; j < ySize; j++) {
+						//cameraRays[(int)i][(int)j] = new Ray(cameraPosition,new Vector((i-xSize/2)/fov,(j-ySize/2)/fov,1));
+						//int[] pixel = m.renderRay(cameraRays[(int)i][(int)j]);
+						
+						r.setPixel(i,j, pixels[i][j]);
 						//int[] oHitVals = (cameraRays[(int)i][(int)j].getHit(other));
 						
 					}
@@ -221,7 +233,7 @@ public class MainEngine {
 			}
 		};
 		
-		timer.schedule(update, 5,10);
+		timer.schedule(update, 0,1);
 		
 	}
 }
