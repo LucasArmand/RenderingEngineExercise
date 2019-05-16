@@ -26,16 +26,32 @@ public class Mesh {
 		}
 	}
 	public int[] renderRay(Ray r) {
-		double[] hitCoord = null;
-		for(Tri t : tris) {
-			double[] hit = r.getHit(t);
-			if(hit.length == 3) {
-				if(hitCoord == null || (hit[2] < hitCoord[2])) {
-					hitCoord = hit;
+		Tri[] order = new Tri[tris.size()];
+		ArrayList<Tri> unorder = (ArrayList<Tri>)tris.clone();
+		Tri closest = unorder.get(0);
+		for(int j = 0; j < order.length; j++) {
+			for(int i = 0; i < unorder.size(); i++) {
+				if(r.getT(closest) > r.getT(tris.get(i))){
+					closest = tris.get(i);
 				}
 			}
+			order[j] = closest;
+			unorder.remove(closest);
+			
 		}
-		if(hitCoord != null) {
+		double[] hitCoord;
+		int count = 0;
+		do {
+			if (count >= tris.size()) {
+				return new int[] {0,0,0};
+			}
+			hitCoord = r.getHitCoord(order[count]);
+			count++;
+			
+		}while(order[cout]);
+		
+		if(hitCoord != null && hitCoord.length == 2) {
+			//System.out.println("len: " + hitCoord.length);
 			return texture.getRaster().getPixel((int)(hitCoord[0]*50)%texture.getWidth(),(int)(hitCoord[1]*50)%texture.getHeight(),new int[] {0,0,0});
 		}
 		return new int[] {0,0,0};

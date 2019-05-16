@@ -20,7 +20,7 @@ public class MainEngine {
 	static double zAngle = 0;
 	static Mesh m;
 	static int xSize = 500;
-	static int ySize = 500;
+	static int ySize = 400;
 	static BufferedImage texture;
 	public static void main(String[] args) throws IOException {
 		
@@ -33,7 +33,7 @@ public class MainEngine {
 		Tri t = new Tri(new Vector(-10,0,0),new Vector(0,10,0),new Vector(10,0,0));
 		System.out.println("tri normal: " + t.getNormal());
 		Ray ray = new Ray(new Vector(0,0,-10),new Vector(0,0,0));
-		System.out.println(ray.getHit(t));
+		//System.out.println(ray.getHit(t));
 
 		texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex1.jpg"));
 		System.out.println(texture.getHeight());
