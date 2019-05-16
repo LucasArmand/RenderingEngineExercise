@@ -40,15 +40,16 @@ public class Mesh {
 			
 		}
 		double[] hitCoord;
-		int count = 0;
+		int count = -1;
 		do {
+			count++;
 			if (count >= tris.size()) {
 				return new int[] {0,0,0};
 			}
 			hitCoord = r.getHitCoord(order[count]);
-			count++;
 			
-		}while(order[cout]);
+			
+		}while(order[count].insideTri(r.multiply(r.getT(order[count]))));
 		
 		if(hitCoord != null && hitCoord.length == 2) {
 			//System.out.println("len: " + hitCoord.length);

@@ -8,7 +8,9 @@ public class Ray {
 		return (tri.getCenter().sub(origin).dot(tri.getNormal()))/(direction.dot(tri.getNormal()));
 		
 	}
-	
+	public Vector multiply(double  t) {
+		return direction.multiply(t);
+	}
 	double[] getHitCoord(Tri tri) {
 		 t = (tri.getCenter().sub(origin).dot(tri.getNormal()))/(direction.dot(tri.getNormal()));
 		//System.out.println(t);
