@@ -22,6 +22,9 @@ public class RenderWindow extends JPanel{
 		width = x;
 		height = y;
 	}
+	public void clear() {
+		data = new int[width][height][3];
+	}
 	public void setPixel(int x, int y, int[] val) {
 		for(int i = 0; i < 3; i++) {
 			data[x][y][i] = val[i];

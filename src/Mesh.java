@@ -12,7 +12,8 @@ public class Mesh {
 	private double angleX, angleY, angleZ;
 	
 	public Mesh(Vector p, Tri... nTris) throws IOException {
-		texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex1.jpg"));
+		//texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex1.jpg")); school
+		texture = ImageIO.read(new File( "C:\\Users\\Lucas\\Desktop\\JavaProjects\\brick.jpg"));
 		position = p.copy();
 		tris = new ArrayList<Tri>();
 		for(Tri t: nTris) {
@@ -28,32 +29,36 @@ public class Mesh {
 	public int[] renderRay(Ray r) {
 		Tri[] order = new Tri[tris.size()];
 		ArrayList<Tri> unorder = (ArrayList<Tri>)tris.clone();
-		Tri closest = unorder.get(0);
+		
 		for(int j = 0; j < order.length; j++) {
+			Tri closest = unorder.get(0);
 			for(int i = 0; i < unorder.size(); i++) {
-				if(r.getT(closest) > r.getT(tris.get(i))){
-					closest = tris.get(i);
+				if(r.getT(closest) > r.getT(unorder.get(i))){
+					closest = unorder.get(i);
 				}
 			}
+			
 			order[j] = closest;
 			unorder.remove(closest);
 			
 		}
 		double[] hitCoord;
-		int count = -1;
+		
+		int count = 0;
 		do {
-			count++;
-			if (count >= tris.size()) {
+			
+			if (count >= order.length) {
 				return new int[] {0,0,0};
 			}
 			hitCoord = r.getHitCoord(order[count]);
+			count++;
 			
-			
-		}while(order[count].insideTri(r.multiply(r.getT(order[count]))));
+		}while(hitCoord.length != 2);
 		
 		if(hitCoord != null && hitCoord.length == 2) {
 			//System.out.println("len: " + hitCoord.length);
 			return texture.getRaster().getPixel((int)(hitCoord[0]*50)%texture.getWidth(),(int)(hitCoord[1]*50)%texture.getHeight(),new int[] {0,0,0});
+			
 		}
 		return new int[] {0,0,0};
 		}

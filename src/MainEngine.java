@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -19,8 +22,8 @@ public class MainEngine {
 	static double yAngle = 0;
 	static double zAngle = 0;
 	static Mesh m;
-	static int xSize = 500;
-	static int ySize = 400;
+	static int xSize = 200;
+	static int ySize = 100;
 	static BufferedImage texture;
 	public static void main(String[] args) throws IOException {
 		
@@ -35,7 +38,8 @@ public class MainEngine {
 		Ray ray = new Ray(new Vector(0,0,-10),new Vector(0,0,0));
 		//System.out.println(ray.getHit(t));
 
-		texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex1.jpg"));
+		//texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex1.jpg")); school
+		texture = ImageIO.read(new File( "C:\\Users\\Lucas\\Desktop\\JavaProjects\\brick.jpg"));
 		System.out.println(texture.getHeight());
 
 		r.setBounds(0,0,xSize,ySize);
@@ -45,9 +49,31 @@ public class MainEngine {
 		
 		framerateText.setBounds(250,250,200,100);
 		frame.add(framerateText);
-		double fov = 300;
+		double fov = 20;
 		Ray[][] cameraRays = new Ray[xSize][ySize];
 		cameraPosition = new Vector(0,0,-20);
+		Vector a = new Vector(5,0,0);
+		Vector b = new Vector(5,0,5);
+		Vector c = new Vector(0,0,5);
+		Vector d = new Vector(0,0,0);
+		Vector a1= new Vector(5,5,0);
+		Vector b1 = new Vector(5,5,5);
+		Vector c1 = new Vector(0,5,5);
+		Vector d1 = new Vector(0,5,0);
+		
+		Tri t1 = new Tri(a,b,c);
+		Tri t2 = new Tri(c,d,a);
+		Tri t3 = new Tri(a1,b1,c1);
+		Tri t4 = new Tri(c1,d1,a1);
+		Tri t5 = new Tri(a,d,a1);
+		Tri t6 = new Tri(d,a1,d1);
+		Tri t7 = new Tri(d,c,c1);
+		Tri t8 = new Tri(d,d1,c1);
+		Tri t9 = new Tri(c,b,b1);
+		Tri t10 = new Tri(b1,c1,c);
+		Tri t11 = new Tri(a,b,b1);
+		Tri t12 = new Tri(b1,a,a1);
+		/*
 		Vector a = new Vector(-5,0,-5);
 		Vector b = new Vector(5,0,-5);
 		Vector c = new Vector(0,0,7.07);
@@ -56,9 +82,10 @@ public class MainEngine {
 		Tri t2 = new Tri(b, c,d);
 		Tri t3 = new Tri(c, a,d);
 		Tri t4 = new Tri(a,b,c);
+		*/
 		System.out.println(t2.getXBase() +", : " + t2.getYBase());
 		try {
-			m = new Mesh(new Vector(0,0,0),t1,t2,t3,t4);
+			m = new Mesh(new Vector(0,0,0),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -193,18 +220,27 @@ public class MainEngine {
 				if(downHeld) {
 					cameraPosition = cameraPosition.add(new Vector(0,.5,0));
 				}
-				int splitX = 5;
-				int splitY = 10;
+				int splitX = 20;
+				int splitY = 20;
 				int[][][] pixels = new int[xSize][ySize][3];
 				Render[][] renders = new Render[splitX][splitY];
 				Thread[][] threads = new Thread[splitX][splitY];
+				ExecutorService es = Executors.newCachedThreadPool();
 				for(int i = 0; i < splitX; i++) {
 					for(int j = 0; j < splitY; j++) {
 						renders[i][j] = new Render(i * (xSize/splitX),j  * (ySize / splitY),(xSize/splitX),(ySize/splitY),xSize,ySize,cameraPosition,m,pixels,texture);
 						threads[i][j] = new Thread(renders[i][j]);
-						threads[i][j].start();
+						es.execute(threads[i][j]);
 					}
 				}
+				es.shutdown();
+				try {
+					es.awaitTermination(1, TimeUnit.SECONDS);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				/*
 				boolean done = false;
 				while (!done) {
 					done = true;
@@ -216,6 +252,7 @@ public class MainEngine {
 						}
 					}
 				}
+				*/
 				
 				//Tri other = new Tri(new Vector(-5,0,1),new Vector (-5,0,1), new Vector(0,0,1));
 				for(int i = 0; i < xSize; i++){
