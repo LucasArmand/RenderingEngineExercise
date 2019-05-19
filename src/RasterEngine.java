@@ -1,8 +1,12 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 
@@ -17,8 +21,12 @@ public class RasterEngine {
 	static Ray ray;
 	static double t;
 	static Vector point;
+	static Tri oTri;
+	static Vector[] points;
+	static Vector[] projs;
 	static int[][][] pixels;
-	public static void main(String[] args) {
+	static BufferedImage texture;
+	public static void main(String[] args) throws IOException {
 		
 		JFrame frame = new JFrame("Engine");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -27,56 +35,78 @@ public class RasterEngine {
 		RenderWindow r = new RenderWindow(xSize,ySize);
 		r.setBounds(0,0,xSize,ySize);
 		frame.add(r);
+		texture = ImageIO.read(new File( "C:\\Users\\lucas_000\\Desktop\\brick.jpg"));
+		//point = new Vector(2,0,20);
+		points = new Vector[] {new Vector(0,0,10),new Vector(0,-10,10),new Vector(10,0,10)};
+		projs = new Vector[points.length];
 		
-		point = new Vector(2,0,20);
+		
 		Vector origin = new Vector(0,0,0);
-		Vector screenPos = new Vector(0,0,1);
+		Vector screenPos = new Vector(0,0,100);
 		Vector screenNorm = new Vector(0,0,1);
+		//System.out.println(tri.getPoints()[0] + ", " + tri.getPoints()[1] + ", " + tri.getPoints()[2] + ", " + tri.getXBase() + ", " + tri.getYBase());
+		//tri = tri.project(origin, screenPos, screenNorm);
+		//System.out.println(tri.getPoints()[0] + ", " + tri.getPoints()[1] + ", " + tri.getPoints()[2] + ", " + tri.getXBase() + ", " + tri.getYBase());
 		
 		Timer timer = new Timer();
 		TimerTask update = new TimerTask() {
 
 			@Override
 			public void run() {
+				r.clear();
 				pixels = new int[xSize][ySize][3];
-				if(rightHeld) {
-					point = point.add(new Vector(1,0,0));
-				}
-				if(upHeld) {
-					point = point.add(new Vector(0,-1,0));
-				}
-				if(forwardHeld) {
-					point = point.add(new Vector(0,0,-.1));
-				}
-				if(leftHeld) {
-					point = point.add(new Vector(-1,0,0));
-				}
-				if(downHeld) {
-					point = point.add(new Vector(0,1,0));
-				}
-				if(backHeld) {
-					point = point.add(new Vector(0,0,.1));
-				}
-				
-
-				ray = new Ray(origin,point.sub(origin));
-				t = (screenPos.sub(origin).dot(screenNorm))/(ray.getDirection().dot(screenNorm));
-				Vector proj = ray.getDirection().multiply(t).add(origin);
-				
-				pixels[(int)proj.getX() + xSize /2][ (int)proj.getY() + ySize /2] = new int[] {255,255,255};
-				//System.out.println(proj);
-				for(int i = 0; i < xSize; i++){
-					for(int j = 0; j < ySize; j++) {
-						
-						//cameraRays[(int)i][(int)j] = new Ray(cameraPosition,new Vector((i-xSize/2)/fov,(j-ySize/2)/fov,1));
-						//int[] pixel = m.renderRay(cameraRays[(int)i][(int)j]);
-						
-						r.setPixel(i,j, pixels[i][j]);
-						//int[] oHitVals = (cameraRays[(int)i][(int)j].getHit(other));
-						
+				for(int i = 0; i < points.length; i++) {
+					
+					if(rightHeld) {
+						points[i] = points[i].add(new Vector(1,0,0));
 					}
-					//System.out.println(new Vector((i-50)/10,(0)/10,1) +", " +cameraRays[(int)i][(int)500].getHit(t));
+					if(upHeld) {
+						points[i] = points[i].add(new Vector(0,-1,0));
+					}
+					if(forwardHeld) {
+						points[i] = points[i].add(new Vector(0,0,.1));
+					}
+					if(leftHeld) {
+						points[i] = points[i].add(new Vector(-1,0,0));
+					}
+					if(downHeld) {
+						points[i] = points[i].add(new Vector(0,1,0));
+					}
+					if(backHeld) {
+						points[i] = points[i].add(new Vector(0,0,-.1));
+					}
+				
+				
+					ray = new Ray(origin,points[i].sub(origin));
+					t = (screenPos.sub(origin).dot(screenNorm))/(ray.getDirection().dot(screenNorm));
+					projs[i] = ray.getDirection().multiply(t).add(origin);
+					//System.out.println(point);
+					
+						//pixels[(int)projs[i].getX() + xSize /2][ (int)projs[i].getY() + ySize /2] = new int[] {255,255,255};
+						
 				}
+				
+				//r.drawLine(50, 10,20,20);
+				//for(int i = 0; i < xSize; i++){
+					//for(int j = 0; j < ySize; j++) {
+				
+			try {
+				oTri = new Tri(points[0],points[1],points[2]);
+				Tri tri = oTri.project(origin, screenPos, screenNorm);
+				//Tri tri = oTri;
+				System.out.println(tri.getPoints()[0] + ", " + tri.getPoints()[1] + ", " + tri.getPoints()[2] + ", " + tri.getXBase() + ", " + tri.getYBase());
+				//r.drawLine((int)projs[projs.length -1 ].getX() + xSize /2, (int)projs[projs.length - 1].getY() + ySize /2, (int)projs[0].getX() + xSize /2, (int)projs[0].getY() + ySize /2);
+				for(int k = 0; k < projs.length - 1; k++) {
+					r.
+					//r.drawLine((int)projs[k].getX() + xSize /2, (int)projs[k].getY() + ySize /2, (int)projs[k + 1].getX() + xSize /2, (int)projs[k+1].getY() + ySize /2);
+				}
+				r.drawLine((int)projs[0].getX() + xSize /2, (int)projs[0].getY() + ySize /2, (int)(tri.getXBase().getX() * 100) + xSize /2, (int)(tri.getXBase().getY() * 100)+ ySize /2);
+				r.drawLine((int)projs[0].getX() + xSize /2, (int)projs[0].getY() + ySize /2, (int)(tri.getYBase().getX() * 100) + xSize /2, (int)(tri.getYBase().getY() * 100)+ ySize /2);
+			}
+			catch(Exception e) {}
+						//r.setPixel(i,j, pixels[i][j]);
+					//}
+				//}
 				r.updateRender();
 			}
 			

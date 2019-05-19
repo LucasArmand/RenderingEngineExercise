@@ -6,6 +6,8 @@ public class Tri {
 	private double distance;
 	private Vector center;
 	private Vector offset;
+	private Vector xBase;
+	private Vector yBase;
 	public Vector[] getPoints() {
 		return points;
 	}
@@ -46,15 +48,9 @@ public class Tri {
 	}
 	
 	public Vector getXBase() {
-		Vector xBase = points[1].sub(points[0]);
-		xBase.normalize();
 		return xBase;
 	}
 	public Vector getYBase() {
-		Vector xBase = points[1].sub(points[0]);
-		xBase.normalize();
-		Vector yBase = normal.cross(xBase);
-		yBase.normalize();
 		return yBase;
 	}
 	
@@ -93,6 +89,39 @@ public class Tri {
 		offset = v;
 		update();
 	}
+	
+	public void setXBase(Vector b) {
+		xBase = b;
+	}
+	public void setYBase(Vector b) {
+		yBase = b;
+	}
+	
+	public Tri project (Vector origin, Vector screenPos, Vector screenNorm) {
+		Vector[] nPoints = new Vector[3];
+		for(int i = 0; i < 3; i++) {
+			Ray r = new Ray(origin, points[i].sub(origin));
+			double t = (screenPos.sub(r.getOrigin()).dot(screenNorm))/(r.getDirection().dot(screenNorm));
+			nPoints[i] = r.getDirection().multiply(t).add(r.getOrigin());
+		}
+		
+		Ray r = new Ray(origin, xBase.add(points[0]).sub(origin));
+		double t = (screenPos.sub(r.getOrigin()).dot(screenNorm))/(r.getDirection().dot(screenNorm));
+		Vector tempX  = r.getDirection().multiply(t).add(r.getOrigin());
+		tempX = tempX.sub(screenPos);
+		tempX.normalize();
+		
+		r = new Ray(origin, yBase.add(points[0]).sub(origin));
+		t = (screenPos.sub(r.getOrigin()).dot(screenNorm))/(r.getDirection().dot(screenNorm));
+		Vector tempY = r.getDirection().multiply(t).add(r.getOrigin());
+		tempY = tempY.sub(screenPos);
+		tempY.normalize();
+		
+		Tri nTri = new Tri(nPoints[0],nPoints[1],nPoints[2]);
+		nTri.setXBase(tempX);
+		nTri.setYBase(tempY);
+		return nTri;
+	}
 	/*
 	public void rotateY (double t) {
 		for(int i = 0; i < 3; i++) {
@@ -116,5 +145,9 @@ public class Tri {
 		distance = center.getMagnitude();
 		normal = a.sub(b).cross(b.sub(c));
 		normal.normalize();
+		xBase = points[1].sub(points[0]);
+		xBase.normalize();
+		yBase = normal.cross(xBase);
+		yBase.normalize();
 	}
 }
