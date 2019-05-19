@@ -11,8 +11,8 @@ import javax.swing.JFrame;
 
 
 public class RasterEngine {
-	static int xSize = 500;
-	static int ySize = 500;
+	static int xSize = 600;
+	static int ySize = 600;
 	static boolean rightHeld,leftHeld,upHeld,downHeld,forwardHeld,backHeld;
 	static Vector cameraPosition;
 	static double xAngle = 0;
@@ -25,6 +25,8 @@ public class RasterEngine {
 	static Vector[] points;
 	static Vector[] projs;
 	static int[][][] pixels;
+	static double lastTime;
+	static int frames;
 	static BufferedImage texture;
 	public static void main(String[] args) throws IOException {
 		
@@ -37,22 +39,38 @@ public class RasterEngine {
 		frame.add(r);
 		texture = ImageIO.read(new File( "C:\\Users\\lucas_000\\Desktop\\brick.jpg"));
 		//point = new Vector(2,0,20);
-		points = new Vector[] {new Vector(0,0,10),new Vector(0,-10,10),new Vector(10,0,10)};
+		points = new Vector[] {new Vector(0,0,10),new Vector(0,-100,10),new Vector(100,0,5)};
 		projs = new Vector[points.length];
-		
 		
 		Vector origin = new Vector(0,0,0);
 		Vector screenPos = new Vector(0,0,100);
 		Vector screenNorm = new Vector(0,0,1);
+		
+		Tri tri = new Tri(points[0],points[1],points[2]);
+		Tri projTri = tri.project(origin, screenPos, screenNorm);
+		Matrix tMat = new Matrix(tri);
+		Matrix pMat = new Matrix(projTri);
+		Matrix projection = tMat.getInverse().mult(pMat);
+		System.out.println(pMat);
+		System.out.println("(" + projTri.minX() +" - "+ projTri.maxX() +") (" + projTri.minY() +" - " + projTri.maxY() +")");
+		System.out.println(projTri.getPoints()[2].transform(projection.getInverse()));
 		//System.out.println(tri.getPoints()[0] + ", " + tri.getPoints()[1] + ", " + tri.getPoints()[2] + ", " + tri.getXBase() + ", " + tri.getYBase());
 		//tri = tri.project(origin, screenPos, screenNorm);
 		//System.out.println(tri.getPoints()[0] + ", " + tri.getPoints()[1] + ", " + tri.getPoints()[2] + ", " + tri.getXBase() + ", " + tri.getYBase());
-		
+		lastTime = System.currentTimeMillis();
+		frames = 0;
+		r.updateRender();
 		Timer timer = new Timer();
 		TimerTask update = new TimerTask() {
-
+			
 			@Override
 			public void run() {
+				frames ++;
+				if (System.currentTimeMillis() - lastTime > 1000) {
+					System.out.println(frames +"fps");
+					frames = 0;
+					lastTime = System.currentTimeMillis();
+				}
 				r.clear();
 				pixels = new int[xSize][ySize][3];
 				for(int i = 0; i < points.length; i++) {
@@ -76,37 +94,16 @@ public class RasterEngine {
 						points[i] = points[i].add(new Vector(0,0,-.1));
 					}
 				
-				
+					
 					ray = new Ray(origin,points[i].sub(origin));
 					t = (screenPos.sub(origin).dot(screenNorm))/(ray.getDirection().dot(screenNorm));
 					projs[i] = ray.getDirection().multiply(t).add(origin);
-					//System.out.println(point);
-					
-						//pixels[(int)projs[i].getX() + xSize /2][ (int)projs[i].getY() + ySize /2] = new int[] {255,255,255};
-						
+
 				}
-				
-				//r.drawLine(50, 10,20,20);
-				//for(int i = 0; i < xSize; i++){
-					//for(int j = 0; j < ySize; j++) {
-				
-			try {
-				oTri = new Tri(points[0],points[1],points[2]);
-				Tri tri = oTri.project(origin, screenPos, screenNorm);
-				//Tri tri = oTri;
-				System.out.println(tri.getPoints()[0] + ", " + tri.getPoints()[1] + ", " + tri.getPoints()[2] + ", " + tri.getXBase() + ", " + tri.getYBase());
-				//r.drawLine((int)projs[projs.length -1 ].getX() + xSize /2, (int)projs[projs.length - 1].getY() + ySize /2, (int)projs[0].getX() + xSize /2, (int)projs[0].getY() + ySize /2);
-				for(int k = 0; k < projs.length - 1; k++) {
-					r.
-					//r.drawLine((int)projs[k].getX() + xSize /2, (int)projs[k].getY() + ySize /2, (int)projs[k + 1].getX() + xSize /2, (int)projs[k+1].getY() + ySize /2);
-				}
-				r.drawLine((int)projs[0].getX() + xSize /2, (int)projs[0].getY() + ySize /2, (int)(tri.getXBase().getX() * 100) + xSize /2, (int)(tri.getXBase().getY() * 100)+ ySize /2);
-				r.drawLine((int)projs[0].getX() + xSize /2, (int)projs[0].getY() + ySize /2, (int)(tri.getYBase().getX() * 100) + xSize /2, (int)(tri.getYBase().getY() * 100)+ ySize /2);
-			}
-			catch(Exception e) {}
-						//r.setPixel(i,j, pixels[i][j]);
-					//}
-				//}
+				Tri tri = new Tri(points[0],points[1],points[2]);
+				tri.setTexture(texture);
+				Tri projTri = tri.project(origin, screenPos, screenNorm);
+				r.drawTri(tri, projTri);
 				r.updateRender();
 			}
 			

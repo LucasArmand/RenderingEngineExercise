@@ -24,6 +24,10 @@ public class Vector {
 	public void setZ(double z) {
 		point[2] = z;
 	}
+	public Vector transform(Matrix t) {
+		return t.mult(this);
+	}
+	
 	public double getX() {
 		return point[0];
 	}
@@ -32,6 +36,9 @@ public class Vector {
 	}
 	public double getZ() {
 		return point[2];
+	}
+	public double[] getArr() {
+		return point;
 	}
 	public double getMagnitude() {
 		return Math.sqrt(Math.pow(getX(),2) +  Math.pow(getY(), 2) + Math.pow(getZ(), 2));

@@ -1,3 +1,4 @@
+import java.awt.image.BufferedImage;
 
 public class Tri {
 	private Vector[] points;
@@ -8,6 +9,7 @@ public class Tri {
 	private Vector offset;
 	private Vector xBase;
 	private Vector yBase;
+	BufferedImage texture;
 	public Vector[] getPoints() {
 		return points;
 	}
@@ -46,7 +48,12 @@ public class Tri {
 		//System.out.println(Vector.project(xBase,p.sub(points[0])));
 		return new double[] {Vector.project(xBase, points[0].sub(p)).getMagnitude(),Vector.project(yBase, p.sub(points[0])).getMagnitude()};
 	}
-	
+	public int[] getTexData(double[] c) {
+		if(c[0] > 0 && c[0] < texture.getWidth() && c[1] > 0 && c[1] < texture.getHeight()) {
+			return texture.getRaster().getPixel((int)c[0],(int)c[1], new int[3]);
+		}
+		return new int[] {0,0,0};
+	}
 	public Vector getXBase() {
 		return xBase;
 	}
@@ -96,8 +103,28 @@ public class Tri {
 	public void setYBase(Vector b) {
 		yBase = b;
 	}
+	public Tri copy() {
+		return new Tri(points[0],points[1],points[2]);
+	}
+	public double maxY() {
+		double max = points[0].getY() > points[1].getY() ? points[0].getY() : points[1].getY();
+		return max > points[2].getY() ? max : points[2].getY();
+	}
+	public double maxX() {
+		double max = points[0].getX() > points[1].getX() ? points[0].getX() : points[1].getX();
+		return max > points[2].getX() ? max : points[2].getX();
+	}
+	public double minY() {
+		double min = points[0].getY() < points[1].getY() ? points[0].getY() : points[1].getY();
+		return min < points[2].getY() ? min : points[2].getY();
+	}
+	public double minX() {
+		double min = points[0].getX() < points[1].getX() ? points[0].getX() : points[1].getX();
+		return min < points[2].getX() ? min : points[2].getX();
+	}
 	
 	public Tri project (Vector origin, Vector screenPos, Vector screenNorm) {
+		Tri save = copy();
 		Vector[] nPoints = new Vector[3];
 		for(int i = 0; i < 3; i++) {
 			Ray r = new Ray(origin, points[i].sub(origin));
@@ -120,6 +147,7 @@ public class Tri {
 		Tri nTri = new Tri(nPoints[0],nPoints[1],nPoints[2]);
 		nTri.setXBase(tempX);
 		nTri.setYBase(tempY);
+		points = save.getPoints();
 		return nTri;
 	}
 	/*
@@ -137,6 +165,10 @@ public class Tri {
 		update();
 	}
 	*/
+	
+	public void setTexture(BufferedImage tex) {
+		texture = tex;
+	}
 	public Tri(Vector a, Vector b, Vector c) {
 		points = new Vector[] {a,b,c};
 		oPoints = new Vector[] {a,b,c};

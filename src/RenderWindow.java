@@ -26,29 +26,45 @@ public class RenderWindow extends JPanel{
 		data = new int[width][height][3];
 	}
 	
-	public void drawTri(Tri t) {
-		
+	public void drawTri(Tri t,Tri p) {
+		Matrix tMat = new Matrix(t);
+		Matrix pMat = new Matrix(p);
+		Matrix projection = tMat.getInverse().mult(pMat);
+		Matrix ap = projection.getInverse();
+		for(int x = (int)p.minX(); x <= (int)p.maxX(); x++) {
+			for(int y = (int)p.minY(); y <= (int)p.maxY(); y++) {
+				//System.out.println(x +", " + y);
+				Vector point = new Vector(x, y,p.getPoints()[0].getZ());
+				if(p.insideTri(point)){
+					if(width/2 + x > 0 && width/2 + x < width && height/2 + y > 0 && height/2 + y < height )
+						data[width/2 + x][height/2 + y] = t.getTexData(t.getCoords(point.transform(ap)));
+					
+					//System.out.println(x +", "+ y +" is in the tri");
+				}
+			}
+		}
 	}
 	
 	
 	public void drawLine(int x1,int y1, int x2, int y2) {
-		int startX = x1 < x2 ? x1 : x2;
-		int endX = x1 >= x2 ? x1 : x2;
-		int startY = y1 < y2 ? y1 : y2;
-		int endY = y1 >= y2 ? y1 : y2;
 		
-		double ratio = ((double)(y2 - y1))/(x2 - x1);
-		endY = ratio > 0 ? startY : endY;
-		//endX = ratio < 0 ? startX : endX;
-		//if(ratio < 1) {
-			for(int i = 0; i < endX - startX; i++) {
-				data[startX + i][endY + (int)(ratio * i)] = new int[] {255,255,255};
+		System.out.println(y1);
+		double yDiff = y2-y1;
+		double xDiff = x2-x1;
+		double ratio;
+		if (Math.abs(yDiff) < Math.abs(xDiff)) {
+			ratio = ((double)(yDiff))/(xDiff == 0 ? 1 : xDiff);
+			for(int x = x1; x <= x2; x = (x1 < x2 ? x + 1 : x-1)) {
+					data[x1 + x][y1 + (int)(ratio * x)] = new int[] {255,255,255};
 			}
-		//{
-			//for(int i = 0; i < endY- startY; i++) {
-			//	data[startX + (int)(1/ratio * i)][endY + i] = new int[] {255,255,255};
-			//}
-		//}
+		}
+		else {
+			ratio = ((double)(xDiff))/(yDiff == 0 ? 1 : yDiff);
+			for(int y = y1; y <= y2; y = (y1 < y2 ? y + 1 : y-1)) {
+				data[x1 + (int)(ratio * y)][y1 + y] = new int[] {255,255,255};
+			}
+		}
+		
 	}
 	public void setPixel(int x, int y, int[] val) {
 		for(int i = 0; i < 3; i++) {
