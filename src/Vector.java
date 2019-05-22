@@ -9,9 +9,10 @@ public class Vector {
 		point = a;
 	}
 	
-	public static Vector project (Vector  a, Vector b) {
+	public static Vector project(Vector a, Vector b) {
 		return a.multiply(a.dot(b)/(Math.pow(a.getMagnitude(),2)));
 	}
+
 	public Vector copy() {
 		return new Vector(this.getX(),this.getY(),this.getZ());
 	}
@@ -68,6 +69,11 @@ public class Vector {
 	public double getDistance(Vector other) {
 		return sub(other).getMagnitude();
 	}
+	public void modify(Vector other) {
+		point[0] = getX() + other.getX();
+		point[1] = getY() + other.getY();
+		point[2] = getZ() + other.getZ();
+	}
 	public static Vector center(Vector a, Vector b, Vector c) {
 		double X = (a.getX() + b.getX() + c.getX())/3;
 		double Y = (a.getY() + b.getY() + c.getY())/3;
@@ -78,4 +84,5 @@ public class Vector {
 	public String toString() {
 		return "<"+getX()+","+getY()+","+getZ()+">";
 	}
+
 }

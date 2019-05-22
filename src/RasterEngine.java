@@ -28,6 +28,8 @@ public class RasterEngine {
 	static double lastTime;
 	static int frames;
 	static BufferedImage texture;
+	static Tri tri;
+	static Tri projTri;
 	public static void main(String[] args) throws IOException {
 		
 		JFrame frame = new JFrame("Engine");
@@ -37,17 +39,17 @@ public class RasterEngine {
 		RenderWindow r = new RenderWindow(xSize,ySize);
 		r.setBounds(0,0,xSize,ySize);
 		frame.add(r);
-		texture = ImageIO.read(new File( "C:\\Users\\lucas_000\\Desktop\\brick.jpg"));
+		texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex2.jpg"));
 		//point = new Vector(2,0,20);
 		points = new Vector[] {new Vector(0,0,10),new Vector(0,-100,10),new Vector(100,0,5)};
 		projs = new Vector[points.length];
 		
-		Vector origin = new Vector(0,0,0);
+		Vector origin = new Vector(0,0,-20);
 		Vector screenPos = new Vector(0,0,100);
 		Vector screenNorm = new Vector(0,0,1);
 		
-		Tri tri = new Tri(points[0],points[1],points[2]);
-		Tri projTri = tri.project(origin, screenPos, screenNorm);
+		tri = new Tri(points[0],points[1],points[2]);
+		projTri = tri.project(origin, screenPos, screenNorm);
 		Matrix tMat = new Matrix(tri);
 		Matrix pMat = new Matrix(projTri);
 		Matrix projection = tMat.getInverse().mult(pMat);
@@ -59,10 +61,12 @@ public class RasterEngine {
 		//System.out.println(tri.getPoints()[0] + ", " + tri.getPoints()[1] + ", " + tri.getPoints()[2] + ", " + tri.getXBase() + ", " + tri.getYBase());
 		lastTime = System.currentTimeMillis();
 		frames = 0;
+		tri = new Tri(points[0],points[1],points[2]);
+		tri.setTexture(texture);
 		r.updateRender();
 		Timer timer = new Timer();
 		TimerTask update = new TimerTask() {
-			
+		
 			@Override
 			public void run() {
 				frames ++;
@@ -72,43 +76,46 @@ public class RasterEngine {
 					lastTime = System.currentTimeMillis();
 				}
 				r.clear();
-				pixels = new int[xSize][ySize][3];
+
 				for(int i = 0; i < points.length; i++) {
 					
 					if(rightHeld) {
-						points[i] = points[i].add(new Vector(1,0,0));
+						points[i].modify(new Vector(1,0,0));
 					}
 					if(upHeld) {
-						points[i] = points[i].add(new Vector(0,-1,0));
+						points[i].modify(new Vector(0,-1,0));
 					}
 					if(forwardHeld) {
-						points[i] = points[i].add(new Vector(0,0,.1));
+						points[i].modify(new Vector(0,0,.1));
 					}
 					if(leftHeld) {
-						points[i] = points[i].add(new Vector(-1,0,0));
+						points[i].modify(new Vector(-1,0,0));
 					}
 					if(downHeld) {
-						points[i] = points[i].add(new Vector(0,1,0));
+						points[i].modify(new Vector(0,1,0));
 					}
 					if(backHeld) {
-						points[i] = points[i].add(new Vector(0,0,-.1));
+						points[i].modify(new Vector(0,0,-.1));
 					}
-				
 					
+					/*
 					ray = new Ray(origin,points[i].sub(origin));
 					t = (screenPos.sub(origin).dot(screenNorm))/(ray.getDirection().dot(screenNorm));
 					projs[i] = ray.getDirection().multiply(t).add(origin);
+					*/
 
 				}
-				Tri tri = new Tri(points[0],points[1],points[2]);
-				tri.setTexture(texture);
-				Tri projTri = tri.project(origin, screenPos, screenNorm);
+				
+				//tri = new Tri(points[0],points[1],points[2]);
+				//tri.setTexture(texture);
+				projTri = tri.project(origin, screenPos, screenNorm);
 				r.drawTri(tri, projTri);
 				r.updateRender();
+				
 			}
 			
 		};
-		timer.schedule(update, 5,5);
+		timer.schedule(update, 5,1);
 		
 		frame.addKeyListener(new KeyListener() {
 			

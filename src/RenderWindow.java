@@ -23,7 +23,16 @@ public class RenderWindow extends JPanel{
 		height = y;
 	}
 	public void clear() {
-		data = new int[width][height][3];
+		for(int i = 0; i < width; i++) {
+			for(int j = 0; j < height; j++) {
+				for(int k = 0; k < 3; k++) {
+					if(data[i][j][k] != 0) {
+						data[i][j][k] = 0;
+					}
+					
+				}
+			}
+		}
 	}
 	
 	public void drawTri(Tri t,Tri p) {
@@ -35,9 +44,10 @@ public class RenderWindow extends JPanel{
 			for(int y = (int)p.minY(); y <= (int)p.maxY(); y++) {
 				//System.out.println(x +", " + y);
 				Vector point = new Vector(x, y,p.getPoints()[0].getZ());
+				
 				if(p.insideTri(point)){
 					if(width/2 + x > 0 && width/2 + x < width && height/2 + y > 0 && height/2 + y < height )
-						data[width/2 + x][height/2 + y] = t.getTexData(t.getCoords(point.transform(ap)));
+						data[width/2 + x][height/2 + y] = new int[] {255,255,255};//t.getTexData(t.getCoords(point.transform(ap)));
 					
 					//System.out.println(x +", "+ y +" is in the tri");
 				}

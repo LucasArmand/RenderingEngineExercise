@@ -10,10 +10,19 @@ public class Tri {
 	private Vector xBase;
 	private Vector yBase;
 	BufferedImage texture;
+
 	public Vector[] getPoints() {
 		return points;
 	}
+	public boolean flatInsideTri(Vector p) {
+		if(p.getX() > minX() && p.getX() < maxX() && p.getY() > minY() && p.getY() < maxY()) {
+			return true;
+		}
+		return false;
+	}
+	
 	public boolean insideTri(Vector p) {
+		
 		boolean noHit = false;
 		Vector ABcrossAP = points[0].sub(points[1]).cross(points[0].sub(p));
 		Vector ABcrossAC = points[0].sub(points[1]).cross(points[0].sub(points[2]));
