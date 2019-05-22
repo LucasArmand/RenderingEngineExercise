@@ -44,8 +44,8 @@ public class RasterEngine {
 		points = new Vector[] {new Vector(0,0,10),new Vector(0,-100,10),new Vector(100,0,5)};
 		projs = new Vector[points.length];
 		
-		Vector origin = new Vector(0,0,-20);
-		Vector screenPos = new Vector(0,0,100);
+		Vector origin = new Vector(0,0,50);
+		Vector screenPos = new Vector(0,0,10);
 		Vector screenNorm = new Vector(0,0,1);
 		
 		tri = new Tri(points[0],points[1],points[2]);

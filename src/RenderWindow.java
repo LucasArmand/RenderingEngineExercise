@@ -47,7 +47,7 @@ public class RenderWindow extends JPanel{
 				
 				if(p.insideTri(point)){
 					if(width/2 + x > 0 && width/2 + x < width && height/2 + y > 0 && height/2 + y < height )
-						data[width/2 + x][height/2 + y] = new int[] {255,255,255};//t.getTexData(t.getCoords(point.transform(ap)));
+						data[width/2 + x][height/2 + y] = t.getTexData(t.getCoords(point.transform(ap)));
 					
 					//System.out.println(x +", "+ y +" is in the tri");
 				}
