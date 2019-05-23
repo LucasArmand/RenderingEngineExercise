@@ -40,15 +40,18 @@ public class RenderWindow extends JPanel{
 		Matrix pMat = new Matrix(p);
 		Matrix projection = tMat.getInverse().mult(pMat);
 		Matrix ap = projection.getInverse();
-		for(int x = (int)p.minX(); x <= (int)p.maxX(); x++) {
-			for(int y = (int)p.minY(); y <= (int)p.maxY(); y++) {
+		Vector point = new Vector(0,0,0);
+		for(int x = Math.max(-width/2,(int)p.minX()); x <= Math.min(width/2,(int)p.maxX()); x++) {
+			for(int y = Math.max(-height/2,(int)p.minY()); y <= Math.min(height/2, (int)p.maxY()); y++) {
 				//System.out.println(x +", " + y);
-				Vector point = new Vector(x, y,p.getPoints()[0].getZ());
+				point.setX(x);
+				point.setY(y);
+				point.setZ(p.getPoints()[0].getZ());
 				
-				if(p.insideTri(point)){
-					if(width/2 + x > 0 && width/2 + x < width && height/2 + y > 0 && height/2 + y < height )
+				if(width/2 + x > 0 && width/2 + x < width && height/2 + y > 0 && height/2 + y < height) {
+					if(p.insideTri(point)) {
 						data[width/2 + x][height/2 + y] = t.getTexData(t.getCoords(point.transform(ap)));
-					
+					}
 					//System.out.println(x +", "+ y +" is in the tri");
 				}
 			}

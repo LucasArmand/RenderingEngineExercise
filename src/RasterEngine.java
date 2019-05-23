@@ -11,8 +11,8 @@ import javax.swing.JFrame;
 
 
 public class RasterEngine {
-	static int xSize = 600;
-	static int ySize = 600;
+	static int xSize = 250;
+	static int ySize = 250;
 	static boolean rightHeld,leftHeld,upHeld,downHeld,forwardHeld,backHeld;
 	static Vector cameraPosition;
 	static double xAngle = 0;
@@ -41,10 +41,10 @@ public class RasterEngine {
 		frame.add(r);
 		texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex2.jpg"));
 		//point = new Vector(2,0,20);
-		points = new Vector[] {new Vector(0,0,10),new Vector(0,-100,10),new Vector(100,0,5)};
+		points = new Vector[] {new Vector(0,0,10),new Vector(0,-300,10),new Vector(300,0,10)};
 		projs = new Vector[points.length];
 		
-		Vector origin = new Vector(0,0,50);
+		Vector origin = new Vector(0,0,0);
 		Vector screenPos = new Vector(0,0,10);
 		Vector screenNorm = new Vector(0,0,1);
 		
@@ -76,7 +76,7 @@ public class RasterEngine {
 					lastTime = System.currentTimeMillis();
 				}
 				r.clear();
-
+				
 				for(int i = 0; i < points.length; i++) {
 					
 					if(rightHeld) {
