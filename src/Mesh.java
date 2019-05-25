@@ -9,22 +9,33 @@ public class Mesh {
 	private ArrayList<Tri> tris;
 	private Vector position;
 	private BufferedImage texture;
-	private double angleX, angleY, angleZ;
+	private Vector locRot;
 	
 	public Mesh(Vector p, Tri... nTris) throws IOException {
 		//texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex1.jpg")); school
-		texture = ImageIO.read(new File( "C:\\Users\\Lucas\\Desktop\\JavaProjects\\brick.jpg"));
+		texture = ImageIO.read(new File( "C:\\Users\\lucas_000\\Desktop\\brick.jpg"));
 		position = p.copy();
+		locRot = new Vector(0,0,0);
 		tris = new ArrayList<Tri>();
 		for(Tri t: nTris) {
-			t.translate(p);
 			tris.add(t);
+		}
+	}
+	public void renderMesh(Vector origin, Vector screenPos, Vector screenNorm, RenderWindow r) {
+		for(Tri t : tris) {
+			t.move(position);
+			
+			Tri p = t.project(origin, screenPos, screenNorm);
+			r.drawTri(t, p);
 		}
 	}
 	public void rotate(double ax,double ay,double az) {
 		for(Tri t : tris) {
 			t.rotate(ax, ay, az);
 		}
+	}
+	public void translate(Vector p) {
+		position = position.add(p);
 	}
 	public int[] renderRay(Ray r) {
 		Tri[] order = new Tri[tris.size()];

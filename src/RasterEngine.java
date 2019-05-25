@@ -11,8 +11,8 @@ import javax.swing.JFrame;
 
 
 public class RasterEngine {
-	static int xSize = 250;
-	static int ySize = 250;
+	static int xSize = 300;
+	static int ySize = 300;
 	static boolean rightHeld,leftHeld,upHeld,downHeld,forwardHeld,backHeld;
 	static Vector cameraPosition;
 	static double xAngle = 0;
@@ -29,6 +29,8 @@ public class RasterEngine {
 	static int frames;
 	static BufferedImage texture;
 	static Tri tri;
+	static Mesh m;
+	static Tri tri2;
 	static Tri projTri;
 	public static void main(String[] args) throws IOException {
 		
@@ -39,16 +41,17 @@ public class RasterEngine {
 		RenderWindow r = new RenderWindow(xSize,ySize);
 		r.setBounds(0,0,xSize,ySize);
 		frame.add(r);
-		texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex2.jpg"));
+		texture = ImageIO.read(new File( "C:\\Users\\lucas_000\\Desktop\\brick.jpg"));
 		//point = new Vector(2,0,20);
-		points = new Vector[] {new Vector(0,0,10),new Vector(0,-300,10),new Vector(300,0,10)};
-		projs = new Vector[points.length];
+		points = new Vector[] {new Vector(0,0,100),new Vector(0,-100,100),new Vector(100,0,100),new Vector(0,0,100), new Vector(100,0,100), new Vector(100,1,5)};
+		//projs = new Vector[points.length];
 		
 		Vector origin = new Vector(0,0,0);
-		Vector screenPos = new Vector(0,0,10);
+		Vector screenPos = new Vector(0,0,50);
 		Vector screenNorm = new Vector(0,0,1);
 		
 		tri = new Tri(points[0],points[1],points[2]);
+		
 		projTri = tri.project(origin, screenPos, screenNorm);
 		Matrix tMat = new Matrix(tri);
 		Matrix pMat = new Matrix(projTri);
@@ -62,7 +65,33 @@ public class RasterEngine {
 		lastTime = System.currentTimeMillis();
 		frames = 0;
 		tri = new Tri(points[0],points[1],points[2]);
+		tri2 = new Tri(points[3],points[4],points[5]);
+		
+		Vector a = new Vector(50,0,0);
+		Vector b = new Vector(50,0,50);
+		Vector c = new Vector(0,0,50);
+		Vector d = new Vector(0,0,0);
+		Vector a1= new Vector(50,50,0);
+		Vector b1 = new Vector(50,50,50);
+		Vector c1 = new Vector(0,50,50);
+		Vector d1 = new Vector(0,50,0);
+		
+		Tri t1 = new Tri(a,b,c);
+		Tri t2 = new Tri(c,d,a);
+		Tri t3 = new Tri(a1,b1,c1);
+		Tri t4 = new Tri(c1,d1,a1);
+		Tri t5 = new Tri(a,d,a1);
+		Tri t6 = new Tri(d,a1,d1);
+		Tri t7 = new Tri(d,c,c1);
+		Tri t8 = new Tri(d,d1,c1);
+		Tri t9 = new Tri(c,b,b1);
+		Tri t10 = new Tri(b1,c1,c);
+		Tri t11 = new Tri(a,b,b1);
+		Tri t12 = new Tri(b1,a,a1);
+		
 		tri.setTexture(texture);
+		tri2.setTexture(texture);
+		m = new Mesh(new Vector(0,0,0),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
 		r.updateRender();
 		Timer timer = new Timer();
 		TimerTask update = new TimerTask() {
@@ -77,39 +106,33 @@ public class RasterEngine {
 				}
 				r.clear();
 				
-				for(int i = 0; i < points.length; i++) {
-					
-					if(rightHeld) {
-						points[i].modify(new Vector(1,0,0));
-					}
-					if(upHeld) {
-						points[i].modify(new Vector(0,-1,0));
-					}
-					if(forwardHeld) {
-						points[i].modify(new Vector(0,0,.1));
-					}
-					if(leftHeld) {
-						points[i].modify(new Vector(-1,0,0));
-					}
-					if(downHeld) {
-						points[i].modify(new Vector(0,1,0));
-					}
-					if(backHeld) {
-						points[i].modify(new Vector(0,0,-.1));
-					}
-					
-					/*
-					ray = new Ray(origin,points[i].sub(origin));
-					t = (screenPos.sub(origin).dot(screenNorm))/(ray.getDirection().dot(screenNorm));
-					projs[i] = ray.getDirection().multiply(t).add(origin);
-					*/
-
+				if(rightHeld) {
+					m.translate(new Vector(1,0,0));
+				}
+				if(upHeld) {
+					m.translate(new Vector(0,-1,0));
+				}
+				if(forwardHeld) {
+					m.translate(new Vector(0,0,.1));
+				}
+				if(leftHeld) {
+					m.translate(new Vector(-1,0,0));
+				}
+				if(downHeld) {
+					m.translate(new Vector(0,1,0));
+				}
+				if(backHeld) {
+					m.translate(new Vector(0,0,-.1));
 				}
 				
 				//tri = new Tri(points[0],points[1],points[2]);
 				//tri.setTexture(texture);
-				projTri = tri.project(origin, screenPos, screenNorm);
-				r.drawTri(tri, projTri);
+				m.renderMesh(origin, screenPos, screenNorm, r);
+				m.rotate(xAngle, yAngle, zAngle);
+				//projTri = tri.project(origin, screenPos, screenNorm);
+				
+				//r.drawTri(tri, projTri);
+			
 				r.updateRender();
 				
 			}

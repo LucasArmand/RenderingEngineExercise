@@ -28,7 +28,10 @@ public class Vector {
 	public Vector transform(Matrix t) {
 		return t.mult(this);
 	}
-	
+	public void setArr(double[] ar) {
+		
+		point = ar;
+	}
 	public double getX() {
 		return point[0];
 	}

@@ -39,7 +39,7 @@ public class MainEngine {
 		//System.out.println(ray.getHit(t));
 
 		//texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex1.jpg")); school
-		texture = ImageIO.read(new File( "C:\\Users\\Lucas\\Desktop\\JavaProjects\\brick.jpg"));
+		texture = ImageIO.read(new File( "C:\\Users\\lucas_000\\Desktop\\brick.jpg"));
 		System.out.println(texture.getHeight());
 
 		r.setBounds(0,0,xSize,ySize);

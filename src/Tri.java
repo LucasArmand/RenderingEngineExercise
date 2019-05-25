@@ -1,4 +1,8 @@
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class Tri {
 	private Vector[] points;
@@ -101,9 +105,12 @@ public class Tri {
 		}
 		update();
 	}
-	public void translate(Vector v) {
-		offset = v;
-		update();
+	public Tri translate(Vector v) {
+		return new Tri(points[0].add(v),points[1].add(v),points[2].add(v));
+	}
+	public void move(Vector v) {
+		for(int i = 0; i < points.length; i++)
+			points[i].modify(v);
 	}
 	
 	public void setXBase(Vector b) {
@@ -186,6 +193,12 @@ public class Tri {
 		distance = center.getMagnitude();
 		normal = a.sub(b).cross(b.sub(c));
 		normal.normalize();
+		try {
+			texture = ImageIO.read(new File( "C:\\Users\\lucas_000\\Desktop\\brick.jpg"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		xBase = points[1].sub(points[0]);
 		xBase.normalize();
 		yBase = normal.cross(xBase);
