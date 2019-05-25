@@ -145,6 +145,9 @@ public class Tri {
 		for(int i = 0; i < 3; i++) {
 			Ray r = new Ray(origin, points[i].sub(origin));
 			double t = (screenPos.sub(r.getOrigin()).dot(screenNorm))/(r.getDirection().dot(screenNorm));
+			if(t <0) {
+				return null;
+			}
 			nPoints[i] = r.getDirection().multiply(t).add(r.getOrigin());
 		}
 		

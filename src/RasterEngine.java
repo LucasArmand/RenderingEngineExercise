@@ -43,11 +43,11 @@ public class RasterEngine {
 		frame.add(r);
 		texture = ImageIO.read(new File( "C:\\Users\\lucas_000\\Desktop\\brick.jpg"));
 		//point = new Vector(2,0,20);
-		points = new Vector[] {new Vector(0,0,100),new Vector(0,-100,100),new Vector(100,0,100),new Vector(0,0,100), new Vector(100,0,100), new Vector(100,1,5)};
+		points = new Vector[] {new Vector(0,0,10),new Vector(10,0,101),new Vector(1,-100,100),new Vector(0,0,10), new Vector(10,0,10), new Vector(100,1,5)};
 		//projs = new Vector[points.length];
 		
 		Vector origin = new Vector(0,0,0);
-		Vector screenPos = new Vector(0,0,50);
+		Vector screenPos = new Vector(0,0,1000);
 		Vector screenNorm = new Vector(0,0,1);
 		
 		tri = new Tri(points[0],points[1],points[2]);
@@ -90,8 +90,9 @@ public class RasterEngine {
 		Tri t12 = new Tri(b1,a,a1);
 		
 		tri.setTexture(texture);
+		m = new Mesh(origin,tri);
 		tri2.setTexture(texture);
-		m = new Mesh(new Vector(0,0,0),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
+		//m = new Mesh(new Vector(0,0,0),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
 		r.updateRender();
 		Timer timer = new Timer();
 		TimerTask update = new TimerTask() {
@@ -107,29 +108,30 @@ public class RasterEngine {
 				r.clear();
 				
 				if(rightHeld) {
-					m.translate(new Vector(1,0,0));
+					m.translate(new Vector(5,0,0));
 				}
 				if(upHeld) {
-					m.translate(new Vector(0,-1,0));
+					m.translate(new Vector(0,-5,0));
 				}
 				if(forwardHeld) {
-					m.translate(new Vector(0,0,.1));
+					m.translate(new Vector(0,0,5));
 				}
 				if(leftHeld) {
-					m.translate(new Vector(-1,0,0));
+					m.translate(new Vector(-5,0,0));
 				}
 				if(downHeld) {
-					m.translate(new Vector(0,1,0));
+					m.translate(new Vector(0,5,0));
 				}
 				if(backHeld) {
-					m.translate(new Vector(0,0,-.1));
+					m.translate(new Vector(0,0,-5));
 				}
 				
 				//tri = new Tri(points[0],points[1],points[2]);
 				//tri.setTexture(texture);
-				m.renderMesh(origin, screenPos, screenNorm, r);
 				m.rotate(xAngle, yAngle, zAngle);
-				//projTri = tri.project(origin, screenPos, screenNorm);
+				m.renderMesh(origin, screenPos, screenNorm, r);
+				
+				//projTri = tri.project(origin, screenPos, screenNorm);s
 				
 				//r.drawTri(tri, projTri);
 			

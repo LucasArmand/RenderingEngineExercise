@@ -52,19 +52,16 @@ public class RenderWindow extends JPanel{
 				//System.out.println(x +", " + y);
 				
 				point.setArr(new double[] {x,y,p.getPoints()[0].getZ()});
-				
-				
+
 				if(width/2 + x > 0 && width/2 + x < width && height/2 + y > 0 && height/2 + y < height) {
-					//double time = System.nanoTime();
-					if(p.insideTri(point)) {
-						//System.out.println(System.nanoTime() - time);
-						if(zBuffer[width/2 + x][height/2 + y] > point.transform(ap).getMagnitude()){
+					if(zBuffer[width/2 + x][height/2 + y] > point.transform(ap).getMagnitude()){
+						if(p.insideTri(point)) {
 							data[width/2 + x][height/2 + y] = t.getTexData(t.getCoords(point.transform(ap)));
 							zBuffer[width/2 + x][height/2 + y] = point.transform(ap).getMagnitude();
 						}
 
 					}
-					//System.out.println(x +", "+ y +" is in the tri");
+
 				}
 				
 			}
@@ -94,14 +91,14 @@ public class RenderWindow extends JPanel{
 		
 	}
 	public void setPixel(int x, int y, int[] val) {
-		raster.setPixel(x, y, val);
+		//raster.setPixel(x, y, val);
 		for(int i = 0; i < 3; i++) {
-			//data[x][y][i] = val[i];
+			data[x][y][i] = val[i];
 		}
 	}
 	
 	public void updateRender() {
-		/*
+		
 		double a = System.currentTimeMillis();
 		int [] bigData = new int[data.length * data[0].length * 3];
 		for(int i = 0; i < data.length; i++) {
@@ -113,7 +110,7 @@ public class RenderWindow extends JPanel{
 			}
 		}
 		raster.setPixels(0,0,width,height,bigData);
-		*/
+		
 		//System.out.println(System.currentTimeMillis()
 		repaint();
 	}

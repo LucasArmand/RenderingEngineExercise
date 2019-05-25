@@ -26,7 +26,10 @@ public class Mesh {
 			t.move(position);
 			
 			Tri p = t.project(origin, screenPos, screenNorm);
-			r.drawTri(t, p);
+			if(p != null) {
+				r.drawTri(t, p);
+			}
+			
 		}
 	}
 	public void rotate(double ax,double ay,double az) {
