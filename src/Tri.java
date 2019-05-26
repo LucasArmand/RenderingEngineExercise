@@ -140,7 +140,8 @@ public class Tri {
 	}
 	
 	public Tri project (Vector origin, Vector screenPos, Vector screenNorm) {
-		Tri save = copy();
+		//Tri save = copy();
+
 		Vector[] nPoints = new Vector[3];
 		for(int i = 0; i < 3; i++) {
 			Ray r = new Ray(origin, points[i].sub(origin));
@@ -150,40 +151,11 @@ public class Tri {
 			}
 			nPoints[i] = r.getDirection().multiply(t).add(r.getOrigin());
 		}
+
+		return new Tri(nPoints[0],nPoints[1],nPoints[2]);
 		
-		Ray r = new Ray(origin, xBase.add(points[0]).sub(origin));
-		double t = (screenPos.sub(r.getOrigin()).dot(screenNorm))/(r.getDirection().dot(screenNorm));
-		Vector tempX  = r.getDirection().multiply(t).add(r.getOrigin());
-		tempX = tempX.sub(screenPos);
-		tempX.normalize();
-		
-		r = new Ray(origin, yBase.add(points[0]).sub(origin));
-		t = (screenPos.sub(r.getOrigin()).dot(screenNorm))/(r.getDirection().dot(screenNorm));
-		Vector tempY = r.getDirection().multiply(t).add(r.getOrigin());
-		tempY = tempY.sub(screenPos);
-		tempY.normalize();
-		
-		Tri nTri = new Tri(nPoints[0],nPoints[1],nPoints[2]);
-		nTri.setXBase(tempX);
-		nTri.setYBase(tempY);
-		points = save.getPoints();
-		return nTri;
 	}
-	/*
-	public void rotateY (double t) {
-		for(int i = 0; i < 3; i++) {
-			
-			
-		}
-		update();
-	}
-	public void rotateZ (double t) {
-		for(int i = 0; i < 3; i++) {
-			double 
-		}
-		update();
-	}
-	*/
+
 	
 	public void setTexture(BufferedImage tex) {
 		texture = tex;

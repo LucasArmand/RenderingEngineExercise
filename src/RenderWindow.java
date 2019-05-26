@@ -15,6 +15,8 @@ public class RenderWindow extends JPanel{
 	private double[][] zBuffer;
 	private int width;
 	private int height;
+	private int w;
+	private int h;
 	private double maxDist = 10000;
 	RenderWindow(int x, int y){
 		render = new BufferedImage(x,y,BufferedImage.TYPE_INT_RGB);
@@ -22,6 +24,8 @@ public class RenderWindow extends JPanel{
 		data = new int[x][y][3];
 		width = x;
 		height = y;
+		w = width/2;
+		h = height/2;
 		zBuffer = new double[x][y];
 	}
 	public void clear() {
@@ -40,33 +44,44 @@ public class RenderWindow extends JPanel{
 	}
 	
 	public void drawTri(Tri t,Tri p) {
-		double a = System.currentTimeMillis();
 		Matrix tMat = new Matrix(t);
 		Matrix pMat = new Matrix(p);
 		Matrix projection = tMat.getInverse().mult(pMat);
 		Matrix ap = projection.getInverse();
 		Vector point = new Vector(0,0,0);
 		
+		
+		//System.out.println("init: " + (System.nanoTime() - a));
+		
+		
 		for(int x = Math.max(-width/2,(int)p.minX()); x <= Math.min(width/2,(int)p.maxX()); x++) {
 			for(int y = Math.max(-height/2,(int)p.minY()); y <= Math.min(height/2, (int)p.maxY()); y++) {
 				//System.out.println(x +", " + y);
+				//point= new Vector(x,y,p.getPoints()[0].getZ());
+				point.setX(x);
+				point.setY(y);
+				point.setZ(p.getPoints()[0].getZ());
+				//point.setArr(new double[] {x,y,p.getPoints()[0].getZ()});
 				
-				point.setArr(new double[] {x,y,p.getPoints()[0].getZ()});
-
-				if(width/2 + x > 0 && width/2 + x < width && height/2 + y > 0 && height/2 + y < height) {
-					if(zBuffer[width/2 + x][height/2 + y] > point.transform(ap).getMagnitude()){
+				if(w+ x > 0 && w + x < width && h + y > 0 && h + y < height) {
+					if(zBuffer[w + x][h + y] > point.transform(ap).getMagnitude()){
 						if(p.insideTri(point)) {
-							data[width/2 + x][height/2 + y] = t.getTexData(t.getCoords(point.transform(ap)));
-							zBuffer[width/2 + x][height/2 + y] = point.transform(ap).getMagnitude();
+							data[w + x][h + y] = t.getTexData(t.getCoords(point.transform(ap)));
+							zBuffer[w + x][h + y] = point.transform(ap).getMagnitude();
 						}
 
 					}
 
 				}
 				
+				
 			}
 		}
+		
+		//System.out.println("loop: " +( total));
 		//System.out.println(System.currentTimeMillis() - a);
+
+		 
 	}
 	
 	

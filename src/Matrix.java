@@ -19,7 +19,7 @@ public class Matrix {
 	Matrix (Matrix m) {
 		matrix = new double[m.matrix.length][m.matrix[0].length];
 	}
-
+	
 	public Matrix (Tri t) {
 		matrix = new double[][] {t.getPoints()[0].getArr(), t.getPoints()[1].getArr(), t.getPoints()[2].getArr()};
 	}
@@ -135,8 +135,8 @@ public class Matrix {
 			int outB = b[0].length; //num columns in B
 			int commonLength = a[0].length;
 			Matrix product = new Matrix(outA,outB);
-			for (int i = 0; i < outA;i++) { //for each row in matrix a
-				for (int j = 0; j < outB;j++) { //for each column in matrix b
+			for (int i = 0; i < a.length;i++) { //for each row in matrix a
+				for (int j = 0; j < b[0].length;j++) { //for each column in matrix b
 					for (int k = 0; k < commonLength; k++) { //going down row i in matrix a and column j in matrix b
 						product.matrix[i][j] += a[i][k] * b[k][j];
 					}

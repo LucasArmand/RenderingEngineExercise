@@ -11,8 +11,8 @@ import javax.swing.JFrame;
 
 
 public class RasterEngine {
-	static int xSize = 300;
-	static int ySize = 300;
+	static int xSize = 800;
+	static int ySize = 800;
 	static boolean rightHeld,leftHeld,upHeld,downHeld,forwardHeld,backHeld;
 	static Vector cameraPosition;
 	static double xAngle = 0;
@@ -32,6 +32,8 @@ public class RasterEngine {
 	static Mesh m;
 	static Tri tri2;
 	static Tri projTri;
+	static Mesh m1;
+	
 	public static void main(String[] args) throws IOException {
 		
 		JFrame frame = new JFrame("Engine");
@@ -43,7 +45,7 @@ public class RasterEngine {
 		frame.add(r);
 		texture = ImageIO.read(new File( "C:\\Users\\lucas_000\\Desktop\\brick.jpg"));
 		//point = new Vector(2,0,20);
-		points = new Vector[] {new Vector(0,0,10),new Vector(10,0,101),new Vector(1,-100,100),new Vector(0,0,10), new Vector(10,0,10), new Vector(100,1,5)};
+		points = new Vector[] {new Vector(0,0,10),new Vector(20,0,10),new Vector(20,-20,10),new Vector(0,0,10), new Vector(10,0,10), new Vector(100,1,5)};
 		//projs = new Vector[points.length];
 		
 		Vector origin = new Vector(0,0,0);
@@ -90,59 +92,15 @@ public class RasterEngine {
 		Tri t12 = new Tri(b1,a,a1);
 		
 		tri.setTexture(texture);
-		m = new Mesh(origin,tri);
+		//m = new Mesh(new Vector(0,0,10),tri);
 		tri2.setTexture(texture);
-		//m = new Mesh(new Vector(0,0,0),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
+		m = new Mesh(new Vector(0,0,100),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
+		m1 =new Mesh(new Vector(-100,0,100),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
 		r.updateRender();
 		Timer timer = new Timer();
-		TimerTask update = new TimerTask() {
+		//TimerTask update = new TimerTask() {
 		
-			@Override
-			public void run() {
-				frames ++;
-				if (System.currentTimeMillis() - lastTime > 1000) {
-					System.out.println(frames +"fps");
-					frames = 0;
-					lastTime = System.currentTimeMillis();
-				}
-				r.clear();
-				
-				if(rightHeld) {
-					m.translate(new Vector(5,0,0));
-				}
-				if(upHeld) {
-					m.translate(new Vector(0,-5,0));
-				}
-				if(forwardHeld) {
-					m.translate(new Vector(0,0,5));
-				}
-				if(leftHeld) {
-					m.translate(new Vector(-5,0,0));
-				}
-				if(downHeld) {
-					m.translate(new Vector(0,5,0));
-				}
-				if(backHeld) {
-					m.translate(new Vector(0,0,-5));
-				}
-				
-				//tri = new Tri(points[0],points[1],points[2]);
-				//tri.setTexture(texture);
-				m.rotate(xAngle, yAngle, zAngle);
-				m.renderMesh(origin, screenPos, screenNorm, r);
-				
-				//projTri = tri.project(origin, screenPos, screenNorm);s
-				
-				//r.drawTri(tri, projTri);
-			
-				r.updateRender();
-				
-			}
-			
-		};
-		timer.schedule(update, 5,1);
-		
-		frame.addKeyListener(new KeyListener() {
+frame.addKeyListener(new KeyListener() {
 			
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -239,5 +197,59 @@ public class RasterEngine {
 			}
 			
 		});
+			//public void run() {
+			while(true) {
+				frames ++;
+				if (System.currentTimeMillis() - lastTime > 1000) {
+					System.out.println(frames +"fps");
+					frames = 0;
+					lastTime = System.currentTimeMillis();
+				}
+				r.clear();
+				
+				if(rightHeld) {
+					m.translate(new Vector(1,0,0));
+					m1.translate(new Vector(1,0,0));
+				}
+				if(upHeld) {
+					m.translate(new Vector(0,-1,0));
+					m1.translate(new Vector(0,-1,0));
+				}
+				if(forwardHeld) {
+					m.translate(new Vector(0,0,5));
+					m1.translate(new Vector(0,0,5));
+				}
+				if(leftHeld) {
+					m.translate(new Vector(-1,0,0));
+					m1.translate(new Vector(-1,0,0));
+				}
+				if(downHeld) {
+					m.translate(new Vector(0,1,0));
+					m1.translate(new Vector(0,1,0));
+				}
+				if(backHeld) {
+					m.translate(new Vector(0,0,-5));
+					m1.translate(new Vector(0,0,-5));
+				}
+				
+				//tri = new Tri(points[0],points[1],points[2]);
+				//tri.setTexture(texture);
+				m.rotate(xAngle, yAngle, zAngle);
+				m1.rotate(xAngle, yAngle, zAngle);
+				m1.renderMesh(origin, screenPos, screenNorm, r);
+				m.renderMesh(origin, screenPos, screenNorm, r);
+				
+				//projTri = tri.project(origin, screenPos, screenNorm);s
+				
+				//r.drawTri(tri, projTri);
+			
+				r.updateRender();
+				
+			}
+			
+		}
+		//timer.schedule(update, 5,1);
+		
+		
 	}
-}
+

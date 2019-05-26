@@ -2,6 +2,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
@@ -18,18 +21,23 @@ public class Mesh {
 		locRot = new Vector(0,0,0);
 		tris = new ArrayList<Tri>();
 		for(Tri t: nTris) {
-			tris.add(t);
+			tris.add(t.copy());
 		}
 	}
 	public void renderMesh(Vector origin, Vector screenPos, Vector screenNorm, RenderWindow r) {
+		ArrayList<Thread> threads = new ArrayList<Thread>();
+		ExecutorService es = Executors.newCachedThreadPool();
 		for(Tri t : tris) {
-			t.move(position);
-			
-			Tri p = t.project(origin, screenPos, screenNorm);
-			if(p != null) {
-				r.drawTri(t, p);
-			}
-			
+			TriRender tr = new TriRender(t,position,origin,screenPos,screenNorm,r);
+			es.execute(tr);
+			//System.out.println(threads.size());
+		}
+		es.shutdown();
+		try {
+			es.awaitTermination(1, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	public void rotate(double ax,double ay,double az) {
