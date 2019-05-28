@@ -11,4 +11,13 @@ public class World {
 			objects.add(go);
 		}
 	}
+	public ArrayList<GameObject> getObjects(){
+		return objects;
+	}
+	public int numObjs() {
+		return objects.size();
+	}
+	public GameObject getObject(int i) {
+		return objects.get(i);
+	}
 }

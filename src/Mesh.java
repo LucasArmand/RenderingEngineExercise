@@ -16,7 +16,7 @@ public class Mesh {
 	
 	public Mesh(Vector p, Tri... nTris) throws IOException {
 		//texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex1.jpg")); school
-		texture = ImageIO.read(new File( "C:\\Users\\lucas_000\\Desktop\\brick.jpg"));
+		texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex2.jpg"));
 		position = p.copy();
 		locRot = new Vector(0,0,0);
 		tris = new ArrayList<Tri>();
@@ -24,8 +24,16 @@ public class Mesh {
 			tris.add(t.copy());
 		}
 	}
+	public Mesh copy() throws IOException {
+			Tri[] copy = new Tri[tris.size()];
+			for(int t = 0; t < copy.length; t++) {
+				copy[t] = (tris.get(t).copy());
+			}
+			return new Mesh(position.copy(),copy);
+
+	}
+	
 	public void renderMesh(Vector origin, Vector screenPos, Vector screenNorm, RenderWindow r) {
-		ArrayList<Thread> threads = new ArrayList<Thread>();
 		ExecutorService es = Executors.newCachedThreadPool();
 		for(Tri t : tris) {
 			TriRender tr = new TriRender(t,position,origin,screenPos,screenNorm,r);
@@ -44,6 +52,9 @@ public class Mesh {
 		for(Tri t : tris) {
 			t.rotate(ax, ay, az);
 		}
+	}
+	public void setPos(Vector p) {
+		position = p.copy();
 	}
 	public void translate(Vector p) {
 		position = position.add(p);

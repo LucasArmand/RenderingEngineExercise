@@ -169,7 +169,7 @@ public class Tri {
 		normal = a.sub(b).cross(b.sub(c));
 		normal.normalize();
 		try {
-			texture = ImageIO.read(new File( "C:\\Users\\lucas_000\\Desktop\\brick.jpg"));
+			texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex2.jpg"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

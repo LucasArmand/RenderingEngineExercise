@@ -11,8 +11,8 @@ import javax.swing.JFrame;
 
 
 public class RasterEngine {
-	static int xSize = 800;
-	static int ySize = 800;
+	static int xSize = 300;
+	static int ySize = 300;
 	static boolean rightHeld,leftHeld,upHeld,downHeld,forwardHeld,backHeld;
 	static Vector cameraPosition;
 	static double xAngle = 0;
@@ -33,7 +33,7 @@ public class RasterEngine {
 	static Tri tri2;
 	static Tri projTri;
 	static Mesh m1;
-	
+	static World world;
 	public static void main(String[] args) throws IOException {
 		
 		JFrame frame = new JFrame("Engine");
@@ -43,7 +43,7 @@ public class RasterEngine {
 		RenderWindow r = new RenderWindow(xSize,ySize);
 		r.setBounds(0,0,xSize,ySize);
 		frame.add(r);
-		texture = ImageIO.read(new File( "C:\\Users\\lucas_000\\Desktop\\brick.jpg"));
+		texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex2.jpg"));
 		//point = new Vector(2,0,20);
 		points = new Vector[] {new Vector(0,0,10),new Vector(20,0,10),new Vector(20,-20,10),new Vector(0,0,10), new Vector(10,0,10), new Vector(100,1,5)};
 		//projs = new Vector[points.length];
@@ -95,7 +95,15 @@ public class RasterEngine {
 		//m = new Mesh(new Vector(0,0,10),tri);
 		tri2.setTexture(texture);
 		m = new Mesh(new Vector(0,0,100),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
-		m1 =new Mesh(new Vector(-100,0,100),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
+		m1 = new Mesh(new Vector(-100,0,100),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
+		world = new World();
+		world.addObjects(new GameObject(m));
+		//world.getObject(1).setLocation(new Vector(50,0,0));
+		for(int i = 0; i < 10; i++) {
+			world.addObjects(new GameObject(world.getObject(i)));
+			world.getObject(i+1).setLocation(new Vector(50 * i,0,0));
+		}
+		
 		r.updateRender();
 		Timer timer = new Timer();
 		//TimerTask update = new TimerTask() {
@@ -206,44 +214,39 @@ frame.addKeyListener(new KeyListener() {
 					lastTime = System.currentTimeMillis();
 				}
 				r.clear();
-				
-				if(rightHeld) {
-					m.translate(new Vector(1,0,0));
-					m1.translate(new Vector(1,0,0));
-				}
-				if(upHeld) {
-					m.translate(new Vector(0,-1,0));
-					m1.translate(new Vector(0,-1,0));
-				}
-				if(forwardHeld) {
-					m.translate(new Vector(0,0,5));
-					m1.translate(new Vector(0,0,5));
-				}
-				if(leftHeld) {
-					m.translate(new Vector(-1,0,0));
-					m1.translate(new Vector(-1,0,0));
-				}
-				if(downHeld) {
-					m.translate(new Vector(0,1,0));
-					m1.translate(new Vector(0,1,0));
-				}
-				if(backHeld) {
-					m.translate(new Vector(0,0,-5));
-					m1.translate(new Vector(0,0,-5));
-				}
+				for(GameObject o : world.getObjects()) {
+					if(rightHeld) {
+						o.setLocation(new Vector(1,0,0));
+						
+					}
+					if(upHeld) {
+						o.setLocation(new Vector(0,-1,0));
+					}
+					if(forwardHeld) {
+						o.setLocation(new Vector(0,0,5));
+					}
+					if(leftHeld) {
+						o.setLocation(new Vector(-1,0,0));
+					}
+					if(downHeld) {
+						o.setLocation(new Vector(0,1,0));
+					}
+					if(backHeld) {
+						o.setLocation(new Vector(0,0,-5));
+					}
 				
 				//tri = new Tri(points[0],points[1],points[2]);
 				//tri.setTexture(texture);
-				m.rotate(xAngle, yAngle, zAngle);
-				m1.rotate(xAngle, yAngle, zAngle);
-				m1.renderMesh(origin, screenPos, screenNorm, r);
-				m.renderMesh(origin, screenPos, screenNorm, r);
+					o.setRot(new Vector(xAngle,yAngle,zAngle));
+	
+					o.getMesh().renderMesh(origin, screenPos, screenNorm, r);
 				
 				//projTri = tri.project(origin, screenPos, screenNorm);s
 				
 				//r.drawTri(tri, projTri);
-			
+				}
 				r.updateRender();
+				
 				
 			}
 			
