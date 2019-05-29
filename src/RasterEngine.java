@@ -11,8 +11,8 @@ import javax.swing.JFrame;
 
 
 public class RasterEngine {
-	static int xSize = 300;
-	static int ySize = 300;
+	static int xSize = 400;
+	static int ySize = 400;
 	static boolean rightHeld,leftHeld,upHeld,downHeld,forwardHeld,backHeld;
 	static Vector cameraPosition;
 	static double xAngle = 0;
@@ -92,18 +92,21 @@ public class RasterEngine {
 		Tri t12 = new Tri(b1,a,a1);
 		
 		tri.setTexture(texture);
-		//m = new Mesh(new Vector(0,0,10),tri);
+		m = new Mesh(new Vector(0,0,10),tri);
 		tri2.setTexture(texture);
-		m = new Mesh(new Vector(0,0,100),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
-		m1 = new Mesh(new Vector(-100,0,100),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
+		//m = new Mesh(new Vector(0,0,100),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
+		//m1 = new Mesh(new Vector(-100,0,100),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
 		world = new World();
+		GameObject object = new GameObject(m);
+		world.addObjects(object);
+		/*
 		world.addObjects(new GameObject(m));
 		//world.getObject(1).setLocation(new Vector(50,0,0));
 		for(int i = 0; i < 10; i++) {
-			world.addObjects(new GameObject(world.getObject(i)));
-			world.getObject(i+1).setLocation(new Vector(50 * i,0,0));
+			world.addObjects(new GameObject(m.copy()));
+			world.getObject(world.getObjects().size() - 1).setLocation(new Vector(50 * (i + 1),0,0));
 		}
-		
+		*/
 		r.updateRender();
 		Timer timer = new Timer();
 		//TimerTask update = new TimerTask() {
@@ -215,6 +218,7 @@ frame.addKeyListener(new KeyListener() {
 				}
 				r.clear();
 				for(GameObject o : world.getObjects()) {
+					
 					if(rightHeld) {
 						o.setLocation(new Vector(1,0,0));
 						
@@ -234,6 +238,7 @@ frame.addKeyListener(new KeyListener() {
 					if(backHeld) {
 						o.setLocation(new Vector(0,0,-5));
 					}
+					
 				
 				//tri = new Tri(points[0],points[1],points[2]);
 				//tri.setTexture(texture);
@@ -241,9 +246,9 @@ frame.addKeyListener(new KeyListener() {
 	
 					o.getMesh().renderMesh(origin, screenPos, screenNorm, r);
 				
-				//projTri = tri.project(origin, screenPos, screenNorm);s
+					//projTri = tri.project(origin, screenPos, screenNorm);s
 				
-				//r.drawTri(tri, projTri);
+					//r.drawTri(tri, projTri);
 				}
 				r.updateRender();
 				

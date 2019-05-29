@@ -1,4 +1,7 @@
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.ComponentSampleModel;
 import java.awt.image.DataBuffer;
@@ -58,6 +61,7 @@ public class RenderWindow extends JPanel{
 			for(int y = Math.max(-height/2,(int)p.minY()); y <= Math.min(height/2, (int)p.maxY()); y++) {
 				//System.out.println(x +", " + y);
 				//point= new Vector(x,y,p.getPoints()[0].getZ());
+				
 				point.setX(x);
 				point.setY(y);
 				point.setZ(p.getPoints()[0].getZ());
@@ -66,13 +70,16 @@ public class RenderWindow extends JPanel{
 				if(w+ x > 0 && w + x < width && h + y > 0 && h + y < height) {
 					if(zBuffer[w + x][h + y] > point.transform(ap).getMagnitude()){
 						if(p.insideTri(point)) {
-							data[w + x][h + y] = t.getTexData(t.getCoords(point.transform(ap)));
+							raster.setPixel(w+x, h+y,t.getTexData(t.getCoords(point.transform(ap))));
+							//data[w + x][h + y] = t.getTexData(t.getCoords(point.transform(ap)));
 							zBuffer[w + x][h + y] = point.transform(ap).getMagnitude();
 						}
 
 					}
 
 				}
+				
+				
 				
 				
 			}
@@ -113,23 +120,25 @@ public class RenderWindow extends JPanel{
 	}
 	
 	public void updateRender() {
-		
-		double a = System.currentTimeMillis();
+		/*
 		int [] bigData = new int[data.length * data[0].length * 3];
 		for(int i = 0; i < data.length; i++) {
 			for(int j = 0; j < data[0].length; j++) {
 				for(int k = 0; k < 3; k++) {
+					//raster.setPixel(i,j,data[i][j]);
 					bigData[i*height*3 + j*3 + k] = data[j][i][k];
 				}
 				
 			}
 		}
 		raster.setPixels(0,0,width,height,bigData);
-		
+		*/
 		//System.out.println(System.currentTimeMillis()
 		repaint();
 	}
 	public void paint(Graphics g) {
+		//AffineTransform t = new AffineTransform(new double[] {2,0,0,1});
+		//AffineTransformOp op = new AffineTransformOp(t,AffineTransformOp.TYPE_BILINEAR);
 		g.drawImage(render,0,0,null);
 	}
 }

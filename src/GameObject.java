@@ -5,7 +5,7 @@ public class GameObject {
 	private Vector location;
 	private Vector locRot;
 	public GameObject(GameObject go) throws IOException {
-		mesh = go.getMesh().copy();
+		mesh = go.getMesh();
 		location = go.getLocation().copy();
 		locRot = go.getRot().copy();
 	}
