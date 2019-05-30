@@ -33,10 +33,10 @@ public class Mesh {
 
 	}
 	
-	public void renderMesh(Vector origin, Vector screenPos, Vector screenNorm, RenderWindow r) {
+	public void renderMesh(Vector origin, Vector screenPos, Vector screenNorm) { 
 		ExecutorService es = Executors.newCachedThreadPool();
 		for(Tri t : tris) {
-			TriRender tr = new TriRender(t,position,origin,screenPos,screenNorm,r);
+			TriRender tr = new TriRender(t,position,origin,screenPos,screenNorm);
 			es.execute(tr);
 			//System.out.println(threads.size());
 		}

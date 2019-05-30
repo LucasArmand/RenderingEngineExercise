@@ -15,6 +15,7 @@ public class RasterEngine {
 	static int ySize = 400;
 	static boolean rightHeld,leftHeld,upHeld,downHeld,forwardHeld,backHeld;
 	static Vector cameraPosition;
+	static Renderer renderer;
 	static double xAngle = 0;
 	static double yAngle = 0;
 	static double zAngle = 0;
@@ -27,6 +28,7 @@ public class RasterEngine {
 	static int[][][] pixels;
 	static double lastTime;
 	static int frames;
+	static RenderWindow r;
 	static BufferedImage texture;
 	static Tri tri;
 	static Mesh m;
@@ -40,7 +42,7 @@ public class RasterEngine {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBounds(200,100,xSize,ySize);
 		frame.setVisible(true);
-		RenderWindow r = new RenderWindow(xSize,ySize);
+		r = new RenderWindow(xSize,ySize);
 		r.setBounds(0,0,xSize,ySize);
 		frame.add(r);
 		texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex2.jpg"));
@@ -68,7 +70,7 @@ public class RasterEngine {
 		frames = 0;
 		tri = new Tri(points[0],points[1],points[2]);
 		tri2 = new Tri(points[3],points[4],points[5]);
-		
+		renderer = new Renderer(xSize,ySize);
 		Vector a = new Vector(50,0,0);
 		Vector b = new Vector(50,0,50);
 		Vector c = new Vector(0,0,50);
@@ -216,6 +218,7 @@ frame.addKeyListener(new KeyListener() {
 					frames = 0;
 					lastTime = System.currentTimeMillis();
 				}
+				//renderer.clear();
 				r.clear();
 				for(GameObject o : world.getObjects()) {
 					
@@ -244,7 +247,7 @@ frame.addKeyListener(new KeyListener() {
 				//tri.setTexture(texture);
 					o.setRot(new Vector(xAngle,yAngle,zAngle));
 	
-					o.getMesh().renderMesh(origin, screenPos, screenNorm, r);
+					o.getMesh().renderMesh(origin, screenPos, screenNorm);
 				
 					//projTri = tri.project(origin, screenPos, screenNorm);s
 				

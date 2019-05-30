@@ -13,7 +13,7 @@ import javax.swing.*;
 
 public class RenderWindow extends JPanel{
 	private BufferedImage render;
-	private int[][][] data;
+	private static int[][][] data;
 	private WritableRaster raster;
 	private double[][] zBuffer;
 	private int width;
@@ -34,14 +34,7 @@ public class RenderWindow extends JPanel{
 	public void clear() {
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
-				zBuffer[i][j] = maxDist;
-				for(int k = 0; k < 3; k++) {
-					if(data[i][j][k] != 0) {
-						data[i][j][k] = 0;
-						
-					}
-					
-				}
+				raster.setPixel(i, j, new int[] {0,0,0});
 			}
 		}
 	}
@@ -113,10 +106,8 @@ public class RenderWindow extends JPanel{
 		
 	}
 	public void setPixel(int x, int y, int[] val) {
-		//raster.setPixel(x, y, val);
-		for(int i = 0; i < 3; i++) {
-			data[x][y][i] = val[i];
-		}
+		raster.setPixel(x, y, val);
+		
 	}
 	
 	public void updateRender() {
