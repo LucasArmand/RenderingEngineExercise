@@ -36,6 +36,7 @@ public class RasterEngine {
 	static Tri projTri;
 	static Mesh m1;
 	static World world;
+	static double speed;
 	public static void main(String[] args) throws IOException {
 		
 		JFrame frame = new JFrame("Engine");
@@ -47,9 +48,9 @@ public class RasterEngine {
 		frame.add(r);
 		texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex2.jpg"));
 		//point = new Vector(2,0,20);
-		points = new Vector[] {new Vector(0,0,10),new Vector(20,0,10),new Vector(20,-20,10),new Vector(0,0,10), new Vector(10,0,10), new Vector(100,1,5)};
+		points = new Vector[] {new Vector(0,0,100),new Vector(2,0,100),new Vector(0,-200,100),new Vector(0,0,10), new Vector(10,0,10), new Vector(100,1,5)};
 		//projs = new Vector[points.length];
-		
+		speed = 10;
 		Vector origin = new Vector(0,0,0);
 		Vector screenPos = new Vector(0,0,1000);
 		Vector screenNorm = new Vector(0,0,1);
@@ -93,8 +94,11 @@ public class RasterEngine {
 		Tri t11 = new Tri(a,b,b1);
 		Tri t12 = new Tri(b1,a,a1);
 		
-		tri.setTexture(texture);
+		//tri.setTexture(texture);
+		
+		Tri tri = new Tri(new Vector(0,0,100),new Vector(100,0,100),new Vector(0,-100,100));
 		m = new Mesh(new Vector(0,0,10),tri);
+		
 		tri2.setTexture(texture);
 		//m = new Mesh(new Vector(0,0,100),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
 		//m1 = new Mesh(new Vector(-100,0,100),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
@@ -223,28 +227,27 @@ frame.addKeyListener(new KeyListener() {
 				for(GameObject o : world.getObjects()) {
 					
 					if(rightHeld) {
-						o.setLocation(new Vector(1,0,0));
+						o.setLocation(new Vector(speed,0,0));
 						
 					}
 					if(upHeld) {
-						o.setLocation(new Vector(0,-1,0));
+						o.setLocation(new Vector(0,-speed,0));
 					}
 					if(forwardHeld) {
-						o.setLocation(new Vector(0,0,5));
+						o.setLocation(new Vector(0,0,speed));
 					}
 					if(leftHeld) {
-						o.setLocation(new Vector(-1,0,0));
+						o.setLocation(new Vector(-speed,0,0));
 					}
 					if(downHeld) {
-						o.setLocation(new Vector(0,1,0));
+						o.setLocation(new Vector(0,speed,0));
 					}
 					if(backHeld) {
-						o.setLocation(new Vector(0,0,-5));
+						o.setLocation(new Vector(0,0,-speed));
 					}
 					
 				
-				//tri = new Tri(points[0],points[1],points[2]);
-				//tri.setTexture(texture);
+				
 					o.setRot(new Vector(xAngle,yAngle,zAngle));
 	
 					o.getMesh().renderMesh(origin, screenPos, screenNorm);

@@ -187,7 +187,7 @@ public class Matrix {
 	public Matrix getInverse() {
 		
 		Matrix solution = ID.copy();
-		matrix = copy().matrix;
+		Matrix save = copy();
 		double a = matrix[0][1];
 		double b = matrix[0][2];
 		double c = matrix[1][1];
@@ -235,6 +235,7 @@ public class Matrix {
 		div = matrix[2][2];
 		rowDiv(2,div);
 		solution.rowDiv(2,div);
+		matrix = save.matrix;
 		return solution;
 
 	}
