@@ -19,7 +19,15 @@ public class Tri {
 		return points;
 	}
 	public boolean flatInsideTri(Vector p) {
-		if(p.getX() > minX() && p.getX() < maxX() && p.getY() > minY() && p.getY() < maxY()) {
+		
+		double area = Math.abs((points[0].getX() * (points[1].getY() - points[2].getY()) + points[1].getX() * (points[2].getY() - points[0].getY()) + points[2].getX() * (points[0].getY()-points[1].getY()))/2);
+		double a1 =  Math.abs((p.getX() * (points[1].getY() - points[2].getY()) + points[1].getX() * (points[2].getY() - p.getY()) + points[2].getX() * (p.getY()-points[1].getY()))/2);
+		double a2 =  Math.abs((points[0].getX() * (p.getY() - points[2].getY()) + p.getX() * (points[2].getY() - points[0].getY()) + points[2].getX() * (points[0].getY()-p.getY()))/2);
+		double a3 =  Math.abs((points[0].getX() * (points[1].getY() - p.getY()) + points[1].getX() * (p.getY() - points[0].getY()) + p.getX() * (points[0].getY()-points[1].getY()))/2);
+		//System.out.println(area);
+		//System.out.println(a1 + a2 + a3);
+		
+		if(Math.abs(a1 + a2 + a3  - area) < 0.1) {
 			return true;
 		}
 		return false;

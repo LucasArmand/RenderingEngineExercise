@@ -29,30 +29,6 @@ public class Renderer {
 	}
 	
 	public void drawTri(Tri t,Tri p) {
-		Matrix tMat = new Matrix(t);
-		Matrix pMat = new Matrix(p);
-		Matrix projection = tMat.getInverse().mult(pMat);
-		
-		Matrix antiprojection = projection.getInverse();
-		Vector newBaseX = t.getXBase().transform(projection);
-		Vector newBaseY = t.getYBase().transform(projection);
-		
-		Vector xTrans = new Vector (1,0,0);
-		Vector yTrans = new Vector(0,1,0);
-		xTrans = xTrans.transform(projection);
-		yTrans = yTrans.transform(projection);
-		
-		//System.out.println(t.getXBase());
-		//System.out.println(newBaseX);
-		BufferedImage texture = t.texture;
-		System.out.println(projection);
-		BufferedImage nTex = new BufferedImage(texture.getWidth(),texture.getHeight(),texture.getType());
-		
-		AffineTransform transform = new AffineTransform(new double[] {xTrans.getX(),xTrans.getY(),yTrans.getX(),yTrans.getY()});
-		//transform = new AffineTransform(new double[] {2,0,0,1});
-		AffineTransformOp op = new AffineTransformOp(transform,AffineTransformOp.TYPE_BILINEAR);
-		nTex = op.filter(texture, nTex);
-		
 		Vector point = new Vector(0,0,0);
 		//System.out.println(nTex.getHeight());
 		for(int x = Math.max(-width/2,(int)p.minX()); x <= Math.min(width/2,(int)p.maxX()); x++) {
@@ -62,17 +38,13 @@ public class Renderer {
 				point.setZ(p.getPoints()[0].getZ());
 				if(width/2 + x > 0 && width/2 + x < width && height/2 + y > 0 && height/2 + y < height) {
 					
-					if(p.insideTri(point)) {
-						
-						double[] c = p.getCoords(point);
-						
-						if(c[0] > 0 && c[0] < nTex.getWidth() && c[1] > 0 && c[1] < nTex.getHeight()) {
-							//
+					if(p.flatInsideTri(point)) {
+//
 							//System.out.println(nTex.getRaster().getPixel((int)c[0],(int)c[1], new int[3])[0]);
-							RasterEngine.r.setPixel(width/2 + x, height/2 + y,nTex.getRaster().getPixel((int)c[0],(int)c[1], new int[3]));
+							RasterEngine.r.setPixel(width/2 + x, height/2 + y,new int[] {255,0,255});
+							//RasterEngine.r.setPixel(width/2 + x, height/2 + y,nTex.getRaster().getPixel((int)c[0],(int)c[1], new int[3]));
 							//RasterEngine.r.setPixel(width/2 + x, height/2 + y,nTex.getRaster().getPixel((int)c[0],(int)c[1], new int[3]));
 							//System.out.println("setting pixel: "  +x +", " + y);
-						}
 						//data[width/2 + x][height/2 + y] = texture.getRaster().getPixel((int)coords[0], (int)coords[1], new int[3]);
 					}
 				}

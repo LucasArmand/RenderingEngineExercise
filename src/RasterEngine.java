@@ -100,11 +100,13 @@ public class RasterEngine {
 		m = new Mesh(new Vector(0,0,10),tri);
 		
 		tri2.setTexture(texture);
-		//m = new Mesh(new Vector(0,0,100),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
+		m = new Mesh(new Vector(0,0,100),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
 		//m1 = new Mesh(new Vector(-100,0,100),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
 		world = new World();
 		GameObject object = new GameObject(m);
+		//world.addObjects(new GameObject(m));
 		world.addObjects(object);
+		//System.out.println(tri.flatInsideTri(new Vector(1,10,0)));
 		/*
 		world.addObjects(new GameObject(m));
 		//world.getObject(1).setLocation(new Vector(50,0,0));
