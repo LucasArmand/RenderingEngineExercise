@@ -45,7 +45,9 @@ public class RasterEngine {
 		frame.setVisible(true);
 		r = new RenderWindow(xSize,ySize);
 		r.setBounds(0,0,xSize,ySize);
+		
 		frame.add(r);
+		
 		texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex2.jpg"));
 		//point = new Vector(2,0,20);
 		points = new Vector[] {new Vector(0,0,100),new Vector(2,0,100),new Vector(0,-200,100),new Vector(0,0,10), new Vector(10,0,10), new Vector(100,1,5)};
@@ -69,6 +71,7 @@ public class RasterEngine {
 		//System.out.println(tri.getPoints()[0] + ", " + tri.getPoints()[1] + ", " + tri.getPoints()[2] + ", " + tri.getXBase() + ", " + tri.getYBase());
 		lastTime = System.currentTimeMillis();
 		frames = 0;
+		
 		tri = new Tri(points[0],points[1],points[2]);
 		tri2 = new Tri(points[3],points[4],points[5]);
 		renderer = new Renderer(xSize,ySize);
@@ -115,6 +118,7 @@ public class RasterEngine {
 			world.getObject(world.getObjects().size() - 1).setLocation(new Vector(50 * (i + 1),0,0));
 		}
 		*/
+		
 		r.updateRender();
 		Timer timer = new Timer();
 		//TimerTask update = new TimerTask() {
@@ -225,6 +229,7 @@ frame.addKeyListener(new KeyListener() {
 					lastTime = System.currentTimeMillis();
 				}
 				//renderer.clear();
+				
 				r.clear();
 				for(GameObject o : world.getObjects()) {
 					
@@ -258,6 +263,7 @@ frame.addKeyListener(new KeyListener() {
 				
 					//r.drawTri(tri, projTri);
 				}
+				
 				r.updateRender();
 				
 				

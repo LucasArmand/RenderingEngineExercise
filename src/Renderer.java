@@ -7,10 +7,12 @@ public class Renderer {
 	private int[][][] data;
 	private int width;
 	private int height;
+	Vector point;
 	public Renderer(int w, int h) {
 		width = w;
 		height = h;
 		data = new int[w][h][3];
+		point = new Vector(0,0,0);
 	}
 	
 	public void clear() {

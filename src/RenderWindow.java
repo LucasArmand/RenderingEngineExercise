@@ -8,6 +8,9 @@ import java.awt.image.DataBuffer;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
 
@@ -21,6 +24,7 @@ public class RenderWindow extends JPanel{
 	private int w;
 	private int h;
 	private double maxDist = 10000;
+	int [] bigData;
 	RenderWindow(int x, int y){
 		render = new BufferedImage(x,y,BufferedImage.TYPE_INT_RGB);
 		raster= render.getRaster();
@@ -30,11 +34,13 @@ public class RenderWindow extends JPanel{
 		w = width/2;
 		h = height/2;
 		zBuffer = new double[x][y];
+		bigData = new int[data.length * data[0].length * 3];
 	}
 	public void clear() {
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
-				raster.setPixel(i, j, new int[] {0,0,0});
+				data[i][j] = new int[] {0,0,0};
+				//raster.setPixel(i, j, new int[] {0,0,0});
 			}
 		}
 	}
@@ -106,13 +112,45 @@ public class RenderWindow extends JPanel{
 		
 	}
 	public void setPixel(int x, int y, int[] val) {
-		raster.setPixel(x, y, val);
+		data[x][y] = val;
+		//raster.setPixel(x, y, val);
 		
 	}
 	
 	public void updateRender() {
+		
+		
+		int divX = 10;
+		int divY = 10;
+		int xGap = data.length / divX;
+		int yGap = data[0].length / divY;
+		//System.out.println(xGap);
+		ExecutorService es = Executors.newCachedThreadPool();
+		for(int x = 0; x < divX; x++) {
+			for(int y = 0; y < divY; y++) {
+				RenderSplit rs = new RenderSplit(x * xGap,y * yGap,xGap,yGap,data,bigData);
+				es.execute(rs);
+				/*
+				for(int i = x * xGap; i < (x+1)*xGap; i++) {
+					for(int j = y * yGap; j < (y+1)*yGap; j++) {
+						//System.out.println(x +": " + y +" : " + i +" " + j);
+						for(int k = 0; k < 3; k++) {
+							bigData[i*height*3 + j*3 + k] = data[j][i][k];
+						}
+					}
+				}
+				*/
+				
+			}
+		}
+		es.shutdown();
+		try {
+			es.awaitTermination(1, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		/*
-		int [] bigData = new int[data.length * data[0].length * 3];
 		for(int i = 0; i < data.length; i++) {
 			for(int j = 0; j < data[0].length; j++) {
 				for(int k = 0; k < 3; k++) {
@@ -122,8 +160,9 @@ public class RenderWindow extends JPanel{
 				
 			}
 		}
-		raster.setPixels(0,0,width,height,bigData);
 		*/
+		raster.setPixels(0,0,width,height,bigData);
+		
 		//System.out.println(System.currentTimeMillis()
 		repaint();
 	}
