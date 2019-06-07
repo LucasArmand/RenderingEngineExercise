@@ -107,6 +107,11 @@ public class RasterEngine {
 		//m1 = new Mesh(new Vector(-100,0,100),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
 		world = new World();
 		GameObject object = new GameObject(m);
+		for(int i = 1; i <= 10; i++) {
+			GameObject obj = new GameObject(m.copy());
+			obj.setLocation(new Vector(i * 50,0,0));
+			world.addObjects(obj);
+		}
 		//world.addObjects(new GameObject(m));
 		world.addObjects(object);
 		//System.out.println(tri.flatInsideTri(new Vector(1,10,0)));

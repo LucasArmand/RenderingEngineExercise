@@ -8,6 +8,7 @@ import java.awt.image.DataBuffer;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -37,12 +38,17 @@ public class RenderWindow extends JPanel{
 		bigData = new int[data.length * data[0].length * 3];
 	}
 	public void clear() {
+		
+		
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
-				data[i][j] = new int[] {0,0,0};
+				for(int k = 0; k < 3; k++){
+					data[i][j][k] = 0;
+					}
 				//raster.setPixel(i, j, new int[] {0,0,0});
 			}
 		}
+		
 	}
 	
 	public void drawTri(Tri t,Tri p) {
@@ -120,8 +126,8 @@ public class RenderWindow extends JPanel{
 	public void updateRender() {
 		
 		
-		int divX = 10;
-		int divY = 10;
+		int divX = 1;
+		int divY = 1;
 		int xGap = data.length / divX;
 		int yGap = data[0].length / divY;
 		//System.out.println(xGap);
