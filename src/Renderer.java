@@ -43,7 +43,10 @@ public class Renderer {
 					if(p.flatInsideTri(point)) {
 //
 							//System.out.println(nTex.getRaster().getPixel((int)c[0],(int)c[1], new int[3])[0]);
-							RasterEngine.r.setPixel(width/2 + x, height/2 + y,new int[] {255,0,255});
+							int colorData[] = new int[] {0,255,0};
+							//System.out.println(t.getPoints()[2] +", " + t.getPoints()[2].transform(ap));
+							//colorData = t.getTexData(t.getCoords(point.transform(ap)));
+							RasterEngine.r.setPixel(width/2 + x, height/2 + y,colorData);
 							//RasterEngine.r.setPixel(width/2 + x, height/2 + y,nTex.getRaster().getPixel((int)c[0],(int)c[1], new int[3]));
 							//RasterEngine.r.setPixel(width/2 + x, height/2 + y,nTex.getRaster().getPixel((int)c[0],(int)c[1], new int[3]));
 							//System.out.println("setting pixel: "  +x +", " + y);

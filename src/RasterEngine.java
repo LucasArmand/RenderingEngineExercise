@@ -50,7 +50,7 @@ public class RasterEngine {
 		
 		texture = ImageIO.read(new File( "C:\\Users\\larmand21\\Desktop\\tex2.jpg"));
 		//point = new Vector(2,0,20);
-		points = new Vector[] {new Vector(0,0,100),new Vector(2,0,100),new Vector(0,-200,100),new Vector(0,0,10), new Vector(10,0,10), new Vector(100,1,5)};
+		points = new Vector[] {new Vector(0,0,100),new Vector(100,0,100),new Vector(0,-200,100),new Vector(0,0,10), new Vector(10,0,10), new Vector(100,1,5)};
 		//projs = new Vector[points.length];
 		speed = 10;
 		Vector origin = new Vector(0,0,0);
@@ -100,7 +100,7 @@ public class RasterEngine {
 		//tri.setTexture(texture);
 		
 		Tri tri = new Tri(new Vector(0,0,100),new Vector(100,0,100),new Vector(0,-100,100));
-		m = new Mesh(new Vector(0,0,10),tri);
+		//m = new Mesh(new Vector(0,0,10),tri);
 		
 		tri2.setTexture(texture);
 		m = new Mesh(new Vector(0,0,100),t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12);
@@ -108,9 +108,9 @@ public class RasterEngine {
 		world = new World();
 		GameObject object = new GameObject(m);
 		for(int i = 1; i <= 10; i++) {
-			GameObject obj = new GameObject(m.copy());
-			obj.setLocation(new Vector(i * 50,0,0));
-			world.addObjects(obj);
+			//GameObject obj = new GameObject(m.copy());
+			//obj.setLocation(new Vector(i * 50,0,0));
+			//world.addObjects(obj);
 		}
 		//world.addObjects(new GameObject(m));
 		world.addObjects(object);
@@ -225,8 +225,9 @@ frame.addKeyListener(new KeyListener() {
 			}
 			
 		});
-			//public void run() {
-			while(true) {
+		TimerTask update = new TimerTask() {
+			public void run() {
+			
 				frames ++;
 				if (System.currentTimeMillis() - lastTime > 1000) {
 					System.out.println(frames +"fps");
@@ -263,8 +264,8 @@ frame.addKeyListener(new KeyListener() {
 					o.setRot(new Vector(xAngle,yAngle,zAngle));
 	
 					o.getMesh().renderMesh(origin, screenPos, screenNorm);
-				
-					//projTri = tri.project(origin, screenPos, screenNorm);s
+					//System.out.println(new Matrix(tri));
+					//projTri = tri.project(origin, screenPos, screenNorm);
 				
 					//r.drawTri(tri, projTri);
 				}
@@ -274,9 +275,9 @@ frame.addKeyListener(new KeyListener() {
 				
 			}
 			
-		}
-		//timer.schedule(update, 5,1);
+		};
+		timer.schedule(update, 1,1);
 		
-		
+	}
 	}
 

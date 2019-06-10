@@ -58,7 +58,6 @@ public class RenderWindow extends JPanel{
 		Matrix ap = projection.getInverse();
 		Vector point = new Vector(0,0,0);
 		
-		
 		//System.out.println("init: " + (System.nanoTime() - a));
 		
 		
@@ -73,14 +72,20 @@ public class RenderWindow extends JPanel{
 				//point.setArr(new double[] {x,y,p.getPoints()[0].getZ()});
 				
 				if(w+ x > 0 && w + x < width && h + y > 0 && h + y < height) {
-					if(zBuffer[w + x][h + y] > point.transform(ap).getMagnitude()){
-						if(p.insideTri(point)) {
-							raster.setPixel(w+x, h+y,t.getTexData(t.getCoords(point.transform(ap))));
-							//data[w + x][h + y] = t.getTexData(t.getCoords(point.transform(ap)));
-							zBuffer[w + x][h + y] = point.transform(ap).getMagnitude();
+					
+					//if(zBuffer[w + x][h + y] > point.transform(ap).getMagnitude()){
+						//System.out.println("e");
+						//System.out.println(point);
+						if(p.flatInsideTri(point)) {
+							
+							//System.out.println("hi");
+							//raster.setPixel(w+x, h+y,t.getTexData(t.getCoords(point.transform(ap))));
+							data[w + x][h + y] = t.getTexData(t.getCoords(point.transform(ap)));
+							
+							//zBuffer[w + x][h + y] = point.transform(ap).getMagnitude();
 						}
 
-					}
+					//}
 
 				}
 				
@@ -126,8 +131,8 @@ public class RenderWindow extends JPanel{
 	public void updateRender() {
 		
 		
-		int divX = 1;
-		int divY = 1;
+		int divX = 20;
+		int divY = 20;
 		int xGap = data.length / divX;
 		int yGap = data[0].length / divY;
 		//System.out.println(xGap);
